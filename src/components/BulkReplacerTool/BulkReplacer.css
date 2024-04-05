@@ -1,0 +1,64 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+
+.bulkreplacer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  background-color: #ffffff;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+}
+
+/* Styling for all text elements inside the container */
+.bulkreplacer-container * {
+  color: #333;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  text-align: center;
+}
+
+.bulkreplacer-container h2 {
+  font-size: 30px;
+  color: #595959;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+/*
+.bulkreplacer-container h4 {
+  font-weight: bold;
+  color: #535353;
+} */
+
+/* Specific styling for input elements */
+.bulkreplacer-container input {
+  border: 1px solid #ccc;
+  padding: 12px;
+  width: fit-content;
+  margin: 10px 0;
+}
+
+.bulkreplacer-container button {
+  background-color: #1976d2;
+  color: white;
+  padding: 12px 24px;
+  margin: 10px 0;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.bulkreplacer-container button:hover {
+  background-color: #115293;
+}
+
+.bulkreplacer-result-section {
+  margin-top: 20px;
+}
+
+.bulkreplacer-result-section p {
+  font-size: 16px;
+  /* color: #535353; */
+  /* font-weight: bold; */
+  margin-bottom: 10px;
+}

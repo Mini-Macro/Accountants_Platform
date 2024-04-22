@@ -145,7 +145,7 @@ export default function SideBar({ onLogout }) {
             <MenuIcon />
           </IconButton>
         </Toolbar>
-        <Box>
+        <Box sx={{ marginTop: 1 }}>
           <img src={FinkeepLogo} alt="Logo" />
         </Box>
         <IconButton

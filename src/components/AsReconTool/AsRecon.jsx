@@ -5,14 +5,16 @@ import "./AsRecon.css";
 function Prediction() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [processedFile, setProcessedFile] = useState(null);
+  const [error, setError] = useState(null);
 
   const resetProgress = () => {
     setUploadProgress(0);
     setProcessedFile(null);
+    setError(null);
   };
 
   const onDrop = useCallback(async (acceptedFiles) => {
-    console.log("File dropped:", acceptedFiles);
+    // console.log("File dropped:", acceptedFiles);
     const file = acceptedFiles[0];
     resetProgress();
 
@@ -20,8 +22,8 @@ function Prediction() {
       const formData = new FormData();
       formData.append("file", file);
 
-      console.log("Making API request...");
-      console.log("Form Data:", formData); // check form data before send it to backend
+      // console.log("Making API request...");
+      // console.log("Form Data:", formData);
 
       const response = await fetch(
         "https://accountants-server.fly.dev/26as_tool",
@@ -31,17 +33,20 @@ function Prediction() {
         }
       );
 
-      console.log("API response:", response);
+      // console.log("API response:", response);
 
       if (response.ok) {
         // The processed file is received from the backend
         const data = await response.blob();
         setProcessedFile(data);
       } else {
-        console.error("Unexpected status code:", response.status);
+        const errorData = await response.json(); // Assuming server sends error message in JSON format
+        setError(errorData.message); // Update error state with server error message
+        // console.error("Unexpected status code:", response.status);
       }
     } catch (error) {
-      console.error("File upload failed:", error.message);
+      // console.error("File upload failed:", error.message);
+      setError(`File upload failed: ${error.message}`);
     }
   }, []);
 
@@ -71,6 +76,7 @@ function Prediction() {
         <p>Drag & drop a TEXT file here or click to select one</p>
         <button className="upload-button">Upload TEXT File</button>
       </div>
+      {error && <div className="error-message">{error}</div>}{" "}
       {processedFile && (
         <div className="download-container">
           <button className="download-button" onClick={downloadProcessedFile}>

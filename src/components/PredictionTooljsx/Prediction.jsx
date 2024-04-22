@@ -5,6 +5,7 @@ import "./Prediction.css";
 function Prediction() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [processedFile, setProcessedFile] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const resetProgress = () => {
     setUploadProgress(0);
@@ -12,7 +13,7 @@ function Prediction() {
   };
 
   const onDrop = useCallback(async (acceptedFiles) => {
-    console.log("File dropped:", acceptedFiles);
+    // console.log("File dropped:", acceptedFiles);
     const file = acceptedFiles[0];
     resetProgress();
 
@@ -20,7 +21,7 @@ function Prediction() {
       const formData = new FormData();
       formData.append("file2", file);
 
-      console.log("Making API request...");
+      // console.log("Making API request...");
 
       // Set a timeout for the API request (e.g., 10 seconds)
       // const timeoutMillis = 100000; // 100 seconds
@@ -47,10 +48,13 @@ function Prediction() {
         const data = await response.blob();
         setProcessedFile(data);
       } else {
-        console.error("Unexpected status code:", response.status);
+        const errorText = await response.text(); // Extract error message from response
+        setErrorMessage(`File upload failed: ${errorText}`);
+        // console.error("Unexpected status code:", response.status);
       }
     } catch (error) {
-      console.error("File upload failed:", error.message);
+      // console.error("File upload failed:", error.message);
+      setErrorMessage(`File upload failed: ${error.message}`);
     }
   }, []);
 
@@ -77,6 +81,7 @@ function Prediction() {
         <p>Drag & drop a CSV file here or click to select one</p>
         <button className="upload-button">Upload CSV</button>
       </div>
+      {errorMessage && <p className="error-message">{errorMessage}</p>}
       {processedFile && (
         <div className="download-container">
           <button className="download-button" onClick={downloadProcessedFile}>

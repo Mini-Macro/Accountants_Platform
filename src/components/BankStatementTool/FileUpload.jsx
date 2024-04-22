@@ -11,10 +11,11 @@ const FileUpload = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [selectedBank, setSelectedBank] = useState("");
   const [downloadUrl, setDownloadUrl] = useState(null); // Download URL state
+  const [error, setError] = useState(null); // State for holding error message
 
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
-    console.log(selectedFile);
+    // console.log(selectedFile);
   };
 
   const handleBankChange = (event) => {
@@ -25,7 +26,7 @@ const FileUpload = () => {
     const formData = new FormData();
     formData.append("pdf_file", selectedFile);
     formData.append("bank_name", selectedBank);
-    console.log("Sending File................");
+    // console.log("Sending File................");
     try {
       const response = await axios.post(
         "https://accountants-server.fly.dev/bank_ststement_tool",
@@ -38,12 +39,14 @@ const FileUpload = () => {
         }
       );
 
-      console.log("Files uploaded successfully");
+      // console.log("Files uploaded successfully");
       setDownloadUrl(response.data);
-      console.log(response.data); // Store response body in state variable
+      setError(null); // Reset error state
+      // console.log(response.data); // Store response body in state variable
     } catch (error) {
-      console.error("Error uploading file:", error);
+      // console.error("Error uploading file:", error);
       // Handle error states accordingly
+      setError("Error uploading file. Please try again."); // Update error state with error message
     }
   };
 
@@ -59,6 +62,7 @@ const FileUpload = () => {
     setSelectedFile(null);
     setSelectedBank("");
     setDownloadUrl(null);
+    setError(null); // Reset error state
   };
 
   return (
@@ -138,6 +142,12 @@ const FileUpload = () => {
           Upload and Process
         </Button>
       )}
+      {error && (
+        <Typography variant="body2" color="error">
+          {error}
+        </Typography>
+      )}{" "}
+      {/* Display error message */}
       {downloadUrl && (
         <Box>
           <Typography variant="body1">Conversion Complete!</Typography>

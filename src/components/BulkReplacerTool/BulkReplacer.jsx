@@ -11,6 +11,7 @@ function BulkReplacer() {
 
   const [files, setFiles] = useState(initialFilesState);
   const [replacedFileContent, setReplacedFileContent] = useState(null);
+  const [error, setError] = useState(null); // State for holding error message
 
   const handleFileUpload = (event, fileType) => {
     setFiles((prevFiles) => ({
@@ -36,10 +37,12 @@ function BulkReplacer() {
         }
       );
 
-      console.log("Files uploaded successfully");
+      // console.log("Files uploaded successfully");
       setReplacedFileContent(response.data); // Store response body in state variable
+      setError(null); // Reset error state
     } catch (error) {
-      console.error("Error uploading files:", error);
+      // console.error("Error uploading files:", error);
+      setError("Error uploading files. Please try again.");
     }
   };
 
@@ -55,6 +58,7 @@ function BulkReplacer() {
     // Reset states to their initial values
     // setFiles(initialFilesState);
     setReplacedFileContent(null);
+    setError(null); // Reset error state
   };
 
   return (
@@ -82,6 +86,12 @@ function BulkReplacer() {
       >
         Upload Files
       </Button>
+      {error && (
+        <Typography variant="body2" color="error">
+          {error}
+        </Typography>
+      )}{" "}
+      {/* Display error message */}
       {replacedFileContent && (
         <Box className="bulkreplacer-result-section">
           <Typography variant="body1">

@@ -122,7 +122,12 @@ export default function SideBar({ onLogout }) {
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar
-        sx={{ display: "flex", flexDirection: "row" }}
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignContent: "center",
+        }}
         position="fixed"
         open={open}
       >
@@ -139,10 +144,10 @@ export default function SideBar({ onLogout }) {
           >
             <MenuIcon />
           </IconButton>
-          <Box>
-            <img src={FinkeepLogo} alt="Logo" />
-          </Box>
         </Toolbar>
+        <Box>
+          <img src={FinkeepLogo} alt="Logo" />
+        </Box>
         <IconButton
           size="large"
           aria-label="account of current user"

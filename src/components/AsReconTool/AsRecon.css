@@ -50,3 +50,7 @@
   background-color: #218838;
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
 }
+
+.error-message {
+  color: red; /* Set text color to red */
+}

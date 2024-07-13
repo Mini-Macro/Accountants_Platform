@@ -6,6 +6,7 @@ import "./SignIn.css";
 const SignIn = ({ onLoginUpdate }) => {
   const [userInput, setUserInput] = useState({ email: "", password: "" });
   const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
   // const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const handleChange = (e) => {
@@ -18,6 +19,7 @@ const SignIn = ({ onLoginUpdate }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email: userInput.email,
@@ -25,7 +27,7 @@ const SignIn = ({ onLoginUpdate }) => {
       });
 
       if (error) {
-        setMessage("Login failed. Please check your credentials.");
+        setError("Login failed. Please check your credentials.");
       } else {
         setMessage("Login Successful.");
         onLoginUpdate(true);
@@ -33,11 +35,11 @@ const SignIn = ({ onLoginUpdate }) => {
       }
     } catch (error) {
       console.error("Error during login:", error.message);
-      setMessage("An unexpected error occurred.");
+      setError("An unexpected error occurred. Please try again later.");
     }
   };
 
-  const handleKeyPress = (e) => {
+  const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       handleSubmit(e);
     }
@@ -49,7 +51,7 @@ const SignIn = ({ onLoginUpdate }) => {
         <div className="signin-container">
           <div className="signin-image">
             <figure>
-              <img src={FinKeepLogo} alt="LogIn Pic" />
+              <img src={FinKeepLogo} alt="FinKeep Logo" />
             </figure>
           </div>
           <div className="signin-form">
@@ -77,7 +79,9 @@ const SignIn = ({ onLoginUpdate }) => {
                   required
                 />
               </div>
-              <button type="submit" onKeyPress={handleKeyPress}>
+              {error && <div className="error-message">{error}</div>}
+              {message && <div className="success-message">{message}</div>}
+              <button type="submit" onKeyDown={handleKeyDown}>
                 Sign In
               </button>
             </form>

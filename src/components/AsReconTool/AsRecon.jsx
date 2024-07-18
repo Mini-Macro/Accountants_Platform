@@ -3,13 +3,11 @@ import { useDropzone } from "react-dropzone";
 import "./AsRecon.css";
 
 function Prediction() {
-  const [uploadProgress, setUploadProgress] = useState(0);
   const [processedFile, setProcessedFile] = useState(null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const resetProgress = () => {
-    setUploadProgress(0);
     setProcessedFile(null);
     setError(null);
   };
@@ -37,7 +35,7 @@ function Prediction() {
         setProcessedFile(data);
       } else {
         const errorData = await response.json(); // Assuming server sends error message in JSON format
-        setError(errorData.message); // Update error state with server error message
+        setError(errorData.message || "An error occurred"); // Update error state with server error message
       }
     } catch (error) {
       setError(`File upload failed: ${error.message}`);
@@ -71,7 +69,7 @@ function Prediction() {
         <input {...getInputProps()} />
         <p>Drag & drop a TEXT file here or click to select one</p>
         <button className="upload-button" disabled={isLoading}>
-          {isLoading ? "Uploading..." : "Upload TEXT File"}
+          Upload TEXT File
         </button>
       </div>
       {isLoading && (

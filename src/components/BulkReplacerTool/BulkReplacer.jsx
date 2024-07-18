@@ -12,6 +12,7 @@ function BulkReplacer() {
   const [files, setFiles] = useState(initialFilesState);
   const [replacedFileContent, setReplacedFileContent] = useState(null);
   const [error, setError] = useState(null); // State for holding error message
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleFileUpload = (event, fileType) => {
     setFiles((prevFiles) => ({
@@ -25,6 +26,7 @@ function BulkReplacer() {
     formData.append("input_file", files.input);
     formData.append("mapping_file", files.mapping);
 
+    setIsLoading(true);
     try {
       const response = await axios.post(
         "https://accountants-server.fly.dev/bulk_replacer_tool",
@@ -43,6 +45,8 @@ function BulkReplacer() {
     } catch (error) {
       // console.error("Error uploading files:", error);
       setError("Error uploading files. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -56,7 +60,7 @@ function BulkReplacer() {
       link.click();
     }
     // Reset states to their initial values
-    // setFiles(initialFilesState);
+    setFiles(initialFilesState);
     setReplacedFileContent(null);
     setError(null); // Reset error state
   };
@@ -86,6 +90,11 @@ function BulkReplacer() {
       >
         Upload Files
       </Button>
+      {isLoading && (
+        <div>
+          <p>Processing your file...</p>
+        </div>
+      )}
       {error && (
         <Typography variant="body2" color="error">
           {error}

@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Button, Box, Typography, Select, MenuItem } from "@mui/material";
+import {
+  Button,
+  Box,
+  Typography,
+  Select,
+  MenuItem,
+  CircularProgress,
+} from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 const Input = styled("input")({
@@ -12,10 +19,10 @@ const FileUpload = () => {
   const [selectedBank, setSelectedBank] = useState("");
   const [downloadUrl, setDownloadUrl] = useState(null); // Download URL state
   const [error, setError] = useState(null); // State for holding error message
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleFileChange = (event) => {
     setSelectedFile(event.target.files[0]);
-    // console.log(selectedFile);
   };
 
   const handleBankChange = (event) => {
@@ -26,7 +33,8 @@ const FileUpload = () => {
     const formData = new FormData();
     formData.append("pdf_file", selectedFile);
     formData.append("bank_name", selectedBank);
-    // console.log("Sending File................");
+    setIsLoading(true);
+    setError(null);
     try {
       const response = await axios.post(
         "https://accountants-server.fly.dev/bank_ststement_tool",
@@ -39,14 +47,11 @@ const FileUpload = () => {
         }
       );
 
-      // console.log("Files uploaded successfully");
       setDownloadUrl(response.data);
-      setError(null); // Reset error state
-      // console.log(response.data); // Store response body in state variable
     } catch (error) {
-      // console.error("Error uploading file:", error);
-      // Handle error states accordingly
       setError("Error uploading file. Please try again."); // Update error state with error message
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -137,9 +142,13 @@ const FileUpload = () => {
           variant="contained"
           color="primary"
           onClick={uploadFile}
-          disabled={!selectedFile}
+          disabled={!selectedFile || isLoading}
         >
-          Upload and Process
+          {isLoading ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : (
+            "Upload and Process"
+          )}
         </Button>
       )}
       {error && (
@@ -147,7 +156,6 @@ const FileUpload = () => {
           {error}
         </Typography>
       )}{" "}
-      {/* Display error message */}
       {downloadUrl && (
         <Box>
           <Typography variant="body1">Conversion Complete!</Typography>

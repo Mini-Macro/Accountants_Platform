@@ -74,3 +74,15 @@
   /* background-color: #0056b3; */
   background-color: #115293;
 }
+
+.error-message {
+  color: #ff0000;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.success-message {
+  color: #008000;
+  margin-bottom: 10px;
+  text-align: center;
+}

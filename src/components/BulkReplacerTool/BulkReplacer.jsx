@@ -1,18 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { Button, Typography, Box } from "@mui/material";
 import axios from "axios";
 import "./BulkReplacer.css";
 
 function BulkReplacer() {
-  const initialFilesState = {
-    input: null,
-    mapping: null,
-  };
+  // const initialFilesState = {
+  //   input: null,
+  //   mapping: null,
+  // };
 
-  const [files, setFiles] = useState(initialFilesState);
+  const [files, setFiles] = useState({ input: null, mapping: null });
   const [replacedFileContent, setReplacedFileContent] = useState(null);
   const [error, setError] = useState(null); // State for holding error message
   const [isLoading, setIsLoading] = useState(false);
+
+  const inputFileRef = useRef(null);
+  const mappingFileRef = useRef(null);
 
   const handleFileUpload = (event, fileType) => {
     setFiles((prevFiles) => ({
@@ -21,12 +24,22 @@ function BulkReplacer() {
     }));
   };
 
+  const resetState = () => {
+    setFiles({ input: null, mapping: null });
+    setReplacedFileContent(null);
+    setError(null);
+    if (inputFileRef.current) inputFileRef.current.value = "";
+    if (mappingFileRef.current) mappingFileRef.current.value = "";
+  };
+
   const handleUpload = async () => {
     const formData = new FormData();
     formData.append("input_file", files.input);
     formData.append("mapping_file", files.mapping);
 
     setIsLoading(true);
+    setError(null);
+
     try {
       const response = await axios.post(
         "https://accountants-server.fly.dev/bulk_replacer_tool",
@@ -41,10 +54,10 @@ function BulkReplacer() {
 
       // console.log("Files uploaded successfully");
       setReplacedFileContent(response.data); // Store response body in state variable
-      setError(null); // Reset error state
     } catch (error) {
       // console.error("Error uploading files:", error);
       setError("Error uploading files. Please try again.");
+      setReplacedFileContent(null);
     } finally {
       setIsLoading(false);
     }
@@ -58,11 +71,9 @@ function BulkReplacer() {
       link.setAttribute("download", "output.csv");
       document.body.appendChild(link);
       link.click();
+      link.remove();
+      resetState();
     }
-    // Reset states to their initial values
-    setFiles(initialFilesState);
-    setReplacedFileContent(null);
-    setError(null); // Reset error state
   };
 
   return (
@@ -74,6 +85,7 @@ function BulkReplacer() {
         accept=".csv"
         onChange={(event) => handleFileUpload(event, "input")}
         className="bulkreplacer-file-input"
+        ref={inputFileRef}
       />
       <Typography variant="h6">Mapping File:</Typography>
       <input
@@ -81,20 +93,18 @@ function BulkReplacer() {
         accept=".csv"
         onChange={(event) => handleFileUpload(event, "mapping")}
         className="bulkreplacer-file-input"
+        ref={mappingFileRef}
       />
       <Button
         variant="contained"
         component="label"
         onClick={handleUpload}
         className="bulkreplacer-upload-button"
+        disabled={!files.input || !files.mapping}
       >
         Upload Files
       </Button>
-      {isLoading && (
-        <div>
-          <p>Processing your file...</p>
-        </div>
-      )}
+      {isLoading && <p>Processing your file...</p>}
       {error && (
         <Typography variant="body2" color="error">
           {error}

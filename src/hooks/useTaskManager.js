@@ -17,7 +17,7 @@ export const useTaskManager = (userEmail) => {
   const fetchTasks = async (assignee) => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/tasks/${assignee}`
+        `https://dashboard-express-server.vercel.app/checklist/tasks/${assignee}`
       );
       setTasks(response.data);
     } catch (error) {
@@ -28,7 +28,7 @@ export const useTaskManager = (userEmail) => {
   const fetchAssignees = async (email, platform) => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/assignees/${email}/${platform}`
+        `https://dashboard-express-server.vercel.app/checklist/assignees/${email}/${platform}`
       );
       setAssignees(response.data);
     } catch (error) {
@@ -39,7 +39,7 @@ export const useTaskManager = (userEmail) => {
   const handleStatusChange = async (taskId, newStatus) => {
     try {
       await axios.patch(
-        `http://localhost:3000/api/tasks/${taskId}`,
+        `https://dashboard-express-server.vercel.app/checklist/tasks/${taskId}`,
         { status: newStatus },
         { headers: { "Content-Type": "application/json" } }
       );
@@ -56,7 +56,7 @@ export const useTaskManager = (userEmail) => {
   const fetchComments = async (taskId) => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/tasks/${taskId}/comments`
+        `https://dashboard-express-server.vercel.app/checklist/tasks/${taskId}/comments`
       );
       setComments((prevComments) => ({
         ...prevComments,
@@ -70,7 +70,7 @@ export const useTaskManager = (userEmail) => {
   const handleAddComment = async (taskId, content) => {
     try {
       const response = await axios.post(
-        `http://localhost:3000/api/tasks/${taskId}/comments`,
+        `https://dashboard-express-server.vercel.app/checklist/tasks/${taskId}/comments`,
         { userEmail, content },
         { headers: { "Content-Type": "application/json" } }
       );
@@ -88,7 +88,7 @@ export const useTaskManager = (userEmail) => {
   const handleEditComment = async (commentId, newContent) => {
     try {
       const response = await axios.put(
-        `http://localhost:3000/api/comments/${commentId}`,
+        `https://dashboard-express-server.vercel.app/checklist/comments/${commentId}`,
         { content: newContent, userEmail }
       );
       setComments((prevComments) => ({
@@ -107,7 +107,7 @@ export const useTaskManager = (userEmail) => {
   const handleDeleteComment = async (commentId, taskId) => {
     try {
       await axios.delete(
-        `http://localhost:3000/api/comments/${commentId}/${userEmail}`
+        `https://dashboard-express-server.vercel.app/checklist/comments/${commentId}/${userEmail}`
       );
       setComments((prevComments) => ({
         ...prevComments,
@@ -125,7 +125,7 @@ export const useTaskManager = (userEmail) => {
   const handleDeleteTask = async (taskId) => {
     try {
       await axios.delete(
-        `http://localhost:3000/api/tasks/${taskId}/${userEmail}`
+        `https://dashboard-express-server.vercel.app/checklist/tasks/${taskId}/${userEmail}`
       );
       setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
       return true;

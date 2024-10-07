@@ -92,7 +92,7 @@ const TaskManager = () => {
       let response;
       if (editingTask) {
         response = await axios.put(
-          `http://localhost:3000/api/tasks/${editingTask.id}`,
+          `https://dashboard-express-server.vercel.app/checklist/tasks/${editingTask.id}`,
           {
             ...newTask,
             userEmail,
@@ -105,12 +105,15 @@ const TaskManager = () => {
           )
         );
       } else {
-        response = await axios.post("http://localhost:3000/api/tasks", {
-          ...newTask,
-          accountantEmail: userEmail,
-          platform: "accountant",
-          createdBy: userEmail,
-        });
+        response = await axios.post(
+          "https://dashboard-express-server.vercel.app/checklist/tasks",
+          {
+            ...newTask,
+            accountantEmail: userEmail,
+            platform: "accountant",
+            createdBy: userEmail,
+          }
+        );
         setTasks((prevTasks) => [...prevTasks, response.data]);
       }
       handleCloseForm();

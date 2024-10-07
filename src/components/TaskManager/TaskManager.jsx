@@ -79,10 +79,10 @@ const TaskManager = () => {
     }
   }, [userEmail]);
 
-  const fetchTasks = async (assignee) => {
+  const fetchTasks = async (user) => {
     try {
       const response = await axios.get(
-        `http://localhost:3000/api/tasks/${assignee}`
+        `http://localhost:3000/api/tasks/${user}`
       );
       setTasks(response.data);
       console.log(response.data);

@@ -7,6 +7,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Divider,
 } from "@mui/material";
 import { MdAdd } from "react-icons/md";
 import { useTaskManager } from "../../hooks/useTaskManager";
@@ -135,7 +136,7 @@ const TaskManager = () => {
     <Box
       sx={{
         flexGrow: 1,
-        p: 3,
+        p: 1,
         maxWidth: "100%",
         height: "800px",
         overflowY: "scroll",
@@ -150,11 +151,11 @@ const TaskManager = () => {
         display="flex"
         justifyContent="space-between"
         alignItems="center"
-        marginBottom={2}
+        marginBottom={4}
       >
-        <h2 className="text-lg font-bold text-navy-700 dark:text-white">
+        {/* <h2 className="text-lg font-bold text-navy-700 dark:text-white">
           Task Management
-        </h2>
+        </h2> */}
 
         {!showTaskForm && (
           // <button
@@ -186,7 +187,7 @@ const TaskManager = () => {
         )}
       </Box>
 
-      <Grid container spacing={3} direction="column">
+      <Grid container spacing={3} direction="row" alignItems="stretch">
         {showTaskForm && (
           <Grid item xs={12}>
             <TaskForm
@@ -200,7 +201,7 @@ const TaskManager = () => {
           </Grid>
         )}
 
-        <Grid item xs={12} md={8}>
+        <Grid item xs={12} md={5}>
           <h3 style={{ marginBottom: "16px" }}>Tasks Created by Me</h3>
           <Grid container spacing={2} direction="column">
             {createdTasks.map((task) => (
@@ -227,8 +228,35 @@ const TaskManager = () => {
           </Grid>
         </Grid>
 
+        {/* Divider Container */}
+        <Grid
+          item
+          xs={12}
+          md={1}
+          container
+          justifyContent="center"
+          alignItems="center"
+          sx={{
+            display: { xs: "none", md: "flex" }, // Hide divider on small screens
+          }}
+        >
+          {/* Gradient Vertical Divider */}
+          <Divider
+            orientation="vertical"
+            flexItem
+            sx={{
+              width: "2px", // Thickness of the divider
+              height: "100%", // Stretch to fill container height
+              backgroundImage:
+                "linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0))",
+              borderRadius: "8px", // Rounded corners
+              margin: "0 16px", // Equal space on both sides
+            }}
+          />
+        </Grid>
+
         {/* Tasks Assigned to the User */}
-        <Grid item xs={12} md={8} mt={4}>
+        <Grid item xs={12} md={5}>
           <h3 style={{ marginBottom: "16px" }}>Tasks Assigned to Me</h3>
           <Grid container spacing={2} direction="column">
             {assignedTasks.map((task) => (

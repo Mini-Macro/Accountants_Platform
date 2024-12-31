@@ -154,6 +154,10 @@ const AccountingRecipe = () => {
       </div>
       {response && (
         <div className="response-container">
+          <div className="response-header">
+            <h2 className="container-title">Detailed Recipe</h2>
+          </div>
+
           <div className="response-section">
             <h3 className="section-title">Business Overview</h3>
             <div className="key-value-grid">

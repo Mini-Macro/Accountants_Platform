@@ -18,6 +18,7 @@ import ContactPageIcon from "@mui/icons-material/ContactPage";
 import CachedIcon from "@mui/icons-material/Cached";
 import ReceiptIcon from "@mui/icons-material/Receipt";
 import FactCheckIcon from "@mui/icons-material/FactCheck";
+import CheckIcon from "@mui/icons-material/Check";
 import ListItemText from "@mui/material/ListItemText";
 import ArticleIcon from "@mui/icons-material/Article";
 import AsRecon from "./components/AsReconTool/AsRecon";
@@ -25,6 +26,8 @@ import GstTool from "./components/GstTool/GstTool";
 import BankStatement from "./components/BankStatementTool/BankStatement";
 import BulkReplacer from "./components/BulkReplacerTool/BulkReplacer";
 import Prediction from "./components/PredictionTooljsx/Prediction";
+// import TaskManager from "./components/TaskManager/TaskManager";
+import TaskManager from "./components/TaskManager/TaskManager2";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -333,15 +336,52 @@ export default function SideBar({ onLogout }) {
               />
             </ListItemButton>
           </ListItem>
+
+          {/* --------------------Task Manager---------------------- */}
+
+          <ListItem
+            disablePadding
+            sx={{ display: "block" }}
+            onClick={() => setMenuData("TaskManager")}
+          >
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? "initial" : "center",
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : "auto",
+                  justifyContent: "center",
+                }}
+              >
+                <CheckIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary="TaskManager"
+                sx={{ opacity: open ? 1 : 0 }}
+              />
+            </ListItemButton>
+          </ListItem>
         </List>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          p: 3,
+        }}
+      >
         {/* <DrawerHeader /> */}
         {menuData == "AsRecon" && <AsRecon />}
         {menuData == "GstTool" && <GstTool />}
         {menuData == "BankStatement" && <BankStatement />}
         {menuData == "BulkReplacer" && <BulkReplacer />}
         {menuData == "PredictionTool" && <Prediction />}
+        {menuData == "TaskManager" && <TaskManager />}
       </Box>
     </Box>
   );

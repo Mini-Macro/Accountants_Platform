@@ -17,7 +17,7 @@ function App() {
   };
 
   return (
-    <div>
+    <div className="app-container">
       {isAuthenticated ? (
         <>
           <Box height={65} />

@@ -88,7 +88,7 @@ const AccountingRecipe = () => {
   };
 
   return (
-    <div className="upload-container ">
+    <div className={`upload-container ${response ? "with-response" : ""}`}>
       <div className="upload-card">
         <div className="card-header">
           <h2>Generate Accounting Recipe</h2>

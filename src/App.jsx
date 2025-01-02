@@ -1,12 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 import SideBar from "./SideBar";
 import Box from "@mui/material/Box";
 import SignIn from "./SignIn";
+import { supabase } from "./supabaseClient";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  const checkAuth = async () => {
+    setIsLoading(true);
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    if (session) {
+      setIsAuthenticated(true);
+    } else {
+      setIsAuthenticated(false);
+    }
+    setIsLoading(false);
+  };
 
   const updateAppState = (dataFromSignin) => {
     setIsAuthenticated(dataFromSignin);
@@ -15,6 +34,25 @@ function App() {
   const handleLogout = () => {
     setIsAuthenticated(false);
   };
+
+  if (loading) {
+    return (
+      <div
+        style={{
+          height: "100vh",
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          color: "#333",
+          fontSize: "1.5rem",
+          fontWeight: "bold",
+        }}
+      >
+        Loading...
+      </div>
+    );
+  }
 
   return (
     <div className="app-container">

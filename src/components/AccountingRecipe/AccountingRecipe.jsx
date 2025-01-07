@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./AccountingRecipe.css";
 
 const AccountingRecipe = () => {
@@ -7,6 +7,20 @@ const AccountingRecipe = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
+
+  const STORAGE_KEY = "accountingRecipeData";
+
+  useEffect(() => {
+    const savedData = sessionStorage.getItem(STORAGE_KEY);
+    if (savedData) {
+      try {
+        const parsedData = JSON.parse(savedData);
+        setResponse(parsedData);
+      } catch (error) {
+        console.error("Error parsing saved data:", error);
+      }
+    }
+  }, []);
 
   const industries = [
     "Transport",
@@ -60,6 +74,9 @@ const AccountingRecipe = () => {
 
       const data = await response.json();
       const parsedData = JSON.parse(data.response);
+
+      // Save the parsed data to sessionStorage
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(parsedData));
       setResponse(parsedData);
     } catch (err) {
       setError(

@@ -33,6 +33,7 @@ function App() {
 
   const handleLogout = () => {
     setIsAuthenticated(false);
+    supabase.auth.signOut();
   };
 
   if (loading) {

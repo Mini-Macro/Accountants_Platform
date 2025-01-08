@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./AccountingRecipe.css";
+import axios from "axios";
 
 const AccountingRecipe = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -7,6 +8,7 @@ const AccountingRecipe = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
 
   const STORAGE_KEY = "accountingRecipeData";
 
@@ -44,6 +46,25 @@ const AccountingRecipe = () => {
       }
       setSelectedFile(file);
       setError(null);
+    }
+  };
+
+  const handleSave = async () => {
+    setIsLoading(true);
+    setError(null);
+    setSuccessMessage(null);
+    try {
+      await axios.post("http://127.0.0.1:8000/session_history/", {
+        file_name: selectedFile.name,
+        industry: selectedIndustry,
+        response: JSON.stringify(response),
+        user_id: "23126e86-8ae4-41bd-9d22-21937a7f2378",
+      });
+      setSuccessMessage("Recipe saved successfully");
+    } catch (error) {
+      setError("Failed to save the recipe: " + error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -157,6 +178,9 @@ const AccountingRecipe = () => {
             </div>
           </div>
           {error && <div className="error-message">{error}</div>}
+          {successMessage && (
+            <div className="success-message">{successMessage}</div>
+          )}
         </div>
 
         <div className="card-footer">
@@ -169,10 +193,18 @@ const AccountingRecipe = () => {
           </button>
         </div>
       </div>
+
       {response && (
         <div className="response-container">
           <div className="response-header">
             <h2 className="container-title">Detailed Recipe</h2>
+            <button
+              className="save-button"
+              onClick={handleSave}
+              disabled={!response}
+            >
+              {isLoading && response ? "Saving..." : "Save Recipe"}
+            </button>
           </div>
 
           <div className="response-section">

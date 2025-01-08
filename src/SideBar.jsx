@@ -26,7 +26,10 @@ import GstTool from "./components/GstTool/GstTool";
 import BankStatement from "./components/BankStatementTool/BankStatement";
 import BulkReplacer from "./components/BulkReplacerTool/BulkReplacer";
 import Prediction from "./components/PredictionTooljsx/Prediction";
+import AccountingRecipe from "./components/AccountingRecipe/AccountingRecipe";
 // import TaskManager from "./components/TaskManager/TaskManager";
+import ChecklistIcon from "@mui/icons-material/Checklist";
+import EditNoteIcon from "@mui/icons-material/EditNote";
 import TaskManager from "./components/TaskManager/TaskManager2";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import Menu from "@mui/material/Menu";
@@ -358,10 +361,40 @@ export default function SideBar({ onLogout }) {
                   justifyContent: "center",
                 }}
               >
-                <CheckIcon />
+                <ChecklistIcon />
               </ListItemIcon>
               <ListItemText
                 primary="TaskManager"
+                sx={{ opacity: open ? 1 : 0 }}
+              />
+            </ListItemButton>
+          </ListItem>
+
+          {/* --------------------Accounting Recipes---------------------- */}
+
+          <ListItem
+            disablePadding
+            sx={{ display: "block" }}
+            onClick={() => setMenuData("AccountingRecipe")}
+          >
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? "initial" : "center",
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : "auto",
+                  justifyContent: "center",
+                }}
+              >
+                <EditNoteIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary="AccountingRecipe"
                 sx={{ opacity: open ? 1 : 0 }}
               />
             </ListItemButton>
@@ -372,7 +405,7 @@ export default function SideBar({ onLogout }) {
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
+          p: 4,
         }}
       >
         {/* <DrawerHeader /> */}
@@ -382,6 +415,7 @@ export default function SideBar({ onLogout }) {
         {menuData == "BulkReplacer" && <BulkReplacer />}
         {menuData == "PredictionTool" && <Prediction />}
         {menuData == "TaskManager" && <TaskManager />}
+        {menuData == "AccountingRecipe" && <AccountingRecipe />}
       </Box>
     </Box>
   );

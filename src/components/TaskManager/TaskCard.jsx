@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Box,
   IconButton,
@@ -6,6 +6,8 @@ import {
   MenuItem,
   TextField,
   Fade,
+  Typography,
+  Divider,
 } from "@mui/material";
 import { MdEdit, MdDelete, MdSend } from "react-icons/md";
 import PersonIcon from "@mui/icons-material/Person";
@@ -44,15 +46,39 @@ export const TaskCard = ({
   };
 
   return (
-    <StyledCard onClick={() => onExpand(task.id)}>
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <h6 className="font-medium text-gray-600">{task.title}</h6>
+    <StyledCard
+      onClick={() => onExpand(task.id)}
+      sx={{
+        minHeight: "150px",
+        transition: "all 0.3 ease-in-out",
+        "&:hover": {
+          transform: "translateY(-2px)",
+          boxShadow: 3,
+        },
+      }}
+    >
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={2}
+      >
+        <h4
+          style={{
+            color: "#424242", // Shade of gray (you can choose a different one)
+            fontWeight: "bold",
+            marginBottom: "8px",
+            fontSize: "1.25rem",
+          }}
+        >
+          {task.title}
+        </h4>
         <Box>
           <StatusChip
             label={task.status}
             status={task.status}
             size="small"
-            sx={{ mx: 1 }}
+            sx={{ mx: 1, fontWeight: "medium" }}
           />
           {task.createdBy === userEmail && (
             <>
@@ -62,6 +88,7 @@ export const TaskCard = ({
                   onEdit(task);
                 }}
                 size="small"
+                color="primary"
               >
                 <MdEdit />
               </IconButton>
@@ -71,6 +98,7 @@ export const TaskCard = ({
                   onDelete(task.id);
                 }}
                 size="small"
+                color="error"
               >
                 <MdDelete />
               </IconButton>
@@ -79,56 +107,59 @@ export const TaskCard = ({
         </Box>
       </Box>
 
+      <Typography variant="body1" color="text.secondary" mb={2}>
+        {task.description}
+      </Typography>
+
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={2}
+      >
+        <Box display="flex" alignItems="center">
+          <PersonIcon color="action" sx={{ mr: 1, fontSize: 20 }} />
+          <Typography variant="body2" fontWeight="medium">
+            {task.assignee}
+          </Typography>
+        </Box>
+        <Select
+          value={task.status}
+          onChange={(e) => onStatusChange(task.id, e.target.value)}
+          variant="outlined"
+          size="small"
+          onClick={(e) => e.stopPropagation()}
+          sx={{ minWidth: 120 }}
+        >
+          <MenuItem value="New">New</MenuItem>
+          <MenuItem value="In Progress">In Progress</MenuItem>
+          <MenuItem value="Completed">Completed</MenuItem>
+        </Select>
+      </Box>
+
       {expanded && (
         <Fade in={expanded}>
-          <Box mt={2}>
-            <p className="text-xs font-medium text-gray-600">
-              {task.description}
-            </p>
-            <Box display="flex" alignItems="center" sx={{ mt: 1 }}>
-              <PersonIcon color="action" sx={{ mr: 1 }} />
-              <p className="text-xs font-medium text-gray-600">
-                {task.assignee}
-              </p>
-            </Box>
+          <Box>
+            <Divider sx={{ my: 2 }} />
             <Box sx={{ mt: 2 }}>
-              <Select
-                value={task.status}
-                onChange={(e) => onStatusChange(task.id, e.target.value)}
-                fullWidth
-                variant="outlined"
-                size="small"
-                onClick={(e) => e.stopPropagation()}
-                className="text-sm font-medium text-navy-700 dark:text-white"
-              >
-                <MenuItem value="New">New</MenuItem>
-                <MenuItem value="In Progress">In Progress</MenuItem>
-                <MenuItem value="Completed">Completed</MenuItem>
-              </Select>
-            </Box>
-            <Box sx={{ mt: 2 }}>
-              <h6 className="font-medium text-navy-700 dark:text-white">
+              <Typography variant="subtitle1" fontWeight="bold" mb={1}>
                 Comments
-              </h6>
+              </Typography>
               <Box
                 component="form"
                 onSubmit={handleCommentSubmit}
-                sx={{ display: "flex", mt: 1 }}
+                sx={{ display: "flex", mb: 2 }}
                 onClick={(e) => e.stopPropagation()}
               >
                 <TextField
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
-                  label="Add a comment"
+                  label="Add a comment..."
                   variant="outlined"
                   fullWidth
                   size="small"
-                  InputLabelProps={{
-                    className: "text-xs font-medium text-gray-600",
-                  }}
                   InputProps={{
-                    className:
-                      "text-sm font-medium text-navy-700 dark:text-white",
+                    sx: { fontSize: "0.875rem" },
                   }}
                 />
                 <IconButton type="submit" color="primary" sx={{ ml: 1 }}>
@@ -136,18 +167,20 @@ export const TaskCard = ({
                 </IconButton>
               </Box>
 
-              {comments[task.id]?.map((comment) => (
-                <CommentItem
-                  key={comment.id}
-                  comment={comment}
-                  userEmail={userEmail}
-                  editingComment={editingComment}
-                  setEditingComment={setEditingComment}
-                  onEditComment={onEditComment}
-                  onDeleteComment={onDeleteComment}
-                  taskId={task.id}
-                />
-              ))}
+              <Box sx={{ maxHeight: "300px", overflowY: "auto" }}>
+                {comments[task.id]?.map((comment) => (
+                  <CommentItem
+                    key={comment.id}
+                    comment={comment}
+                    userEmail={userEmail}
+                    editingComment={editingComment}
+                    setEditingComment={setEditingComment}
+                    onEditComment={onEditComment}
+                    onDeleteComment={onDeleteComment}
+                    taskId={task.id}
+                  />
+                ))}
+              </Box>
             </Box>
           </Box>
         </Fade>

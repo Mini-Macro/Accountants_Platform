@@ -170,7 +170,6 @@ const AccountingRecipe = () => {
                 </div>
               ) : (
                 <div className="upload-placeholder">
-                  <div className="upload-icon">⭐</div>
                   <span>Click to upload or drag and drop</span>
                   <span className="file-types">TXT files only (max 10MB)</span>
                 </div>

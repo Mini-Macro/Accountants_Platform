@@ -142,9 +142,33 @@
   cursor: not-allowed;
 }
 
+.save-button {
+  width: 100px;
+  background-color: #007bff;
+  color: white;
+  border-radius: 6px;
+  margin: 0 0 12px 0;
+  font-size: 0.85rem;
+  /* padding-bottom: 8px; */
+}
+
+.save-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
 .error-message {
   color: #dc2626;
   background-color: #fee2e2;
+  padding: 0.75rem;
+  border-radius: 0.375rem;
+  margin: 1rem 0;
+  font-size: 0.875rem;
+}
+
+.success-message {
+  color: #059669;
+  background-color: #ecfdf5;
   padding: 0.75rem;
   border-radius: 0.375rem;
   margin: 1rem 0;
@@ -170,6 +194,8 @@
   padding: 1rem 1rem 0 1rem;
   margin: -1rem -1rem 1rem -1rem;
   z-index: 10;
+  display: flex;
+  justify-content: space-between;
 }
 
 .container-title {
@@ -178,7 +204,7 @@
   font-weight: 600;
   margin: 0 0 12px 0;
   padding-bottom: 8px;
-  border-bottom: 1px solid #e5e7eb;
+  /* border-bottom: 1px solid #e5e7eb; */
 }
 
 .response-container pre {

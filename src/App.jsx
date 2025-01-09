@@ -19,6 +19,7 @@ function App() {
     const {
       data: { session },
     } = await supabase.auth.getSession();
+    console.log("session", session);
     if (session) {
       setIsAuthenticated(true);
     } else {

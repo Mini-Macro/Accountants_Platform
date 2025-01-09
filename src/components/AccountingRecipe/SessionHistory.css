@@ -1,0 +1,178 @@
+.session-history-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.session-history-card {
+  background-color: #f3f4f6;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  padding: 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.card-content {
+  padding: 20px;
+}
+
+.sessions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.session-item {
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+}
+
+.session-content {
+  padding: 16px;
+}
+
+.session-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.header-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.icon {
+  font-size: 1.1rem;
+}
+
+.overview-section {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 16px;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  margin: 0 0 12px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.overview-item {
+  font-size: 0.9rem;
+}
+
+.overview-item.full-width {
+  grid-column: 1 / -1;
+}
+
+.label {
+  color: #666;
+  font-weight: 500;
+}
+
+.recipe-section {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 16px;
+}
+
+.recipe-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.recipe-item {
+  background: #f9fafb;
+  padding: 12px;
+  border-radius: 6px;
+}
+
+.recipe-subtitle {
+  margin: 0 0 8px 0;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #333;
+  text-transform: capitalize;
+}
+
+.recipe-points {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 0.9rem;
+  color: #4b5563;
+}
+
+.recipe-points li {
+  margin-bottom: 4px;
+}
+
+.recipe-points li:last-child {
+  margin-bottom: 0;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+
+.loading-text {
+  color: #666;
+  font-size: 1rem;
+}
+
+.error-container {
+  background-color: #fee2e2;
+  padding: 16px;
+  border-radius: 8px;
+  margin: 20px;
+}
+
+.error-text {
+  color: #dc2626;
+  font-size: 0.9rem;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .session-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .overview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .session-history-container {
+    padding: 10px;
+  }
+}

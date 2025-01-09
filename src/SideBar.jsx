@@ -27,6 +27,7 @@ import BankStatement from "./components/BankStatementTool/BankStatement";
 import BulkReplacer from "./components/BulkReplacerTool/BulkReplacer";
 import Prediction from "./components/PredictionTooljsx/Prediction";
 import AccountingRecipe from "./components/AccountingRecipe/AccountingRecipe";
+import SessionHistory from "./components/AccountingRecipe/SessionHistory";
 // import TaskManager from "./components/TaskManager/TaskManager";
 import ChecklistIcon from "@mui/icons-material/Checklist";
 import EditNoteIcon from "@mui/icons-material/EditNote";
@@ -399,6 +400,35 @@ export default function SideBar({ onLogout }) {
               />
             </ListItemButton>
           </ListItem>
+
+          {/* --------------------Session History---------------------- */}
+          <ListItem
+            disablePadding
+            sx={{ display: "block" }}
+            onClick={() => setMenuData("SessionHistory")}
+          >
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? "initial" : "center",
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : "auto",
+                  justifyContent: "center",
+                }}
+              >
+                <EditNoteIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary="SessionHistory"
+                sx={{ opacity: open ? 1 : 0 }}
+              />
+            </ListItemButton>
+          </ListItem>
         </List>
       </Drawer>
       <Box
@@ -416,6 +446,7 @@ export default function SideBar({ onLogout }) {
         {menuData == "PredictionTool" && <Prediction />}
         {menuData == "TaskManager" && <TaskManager />}
         {menuData == "AccountingRecipe" && <AccountingRecipe />}
+        {menuData == "SessionHistory" && <SessionHistory />}
       </Box>
     </Box>
   );

@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { supabase } from "../../supabaseClient";
+import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Typography,
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import "./SessionHistory.css";
 
 const SessionHistory = () => {
@@ -83,19 +90,24 @@ const SessionHistory = () => {
           <h2 className="card-title">Session History</h2>
         </div>
         <div className="card-content">
-          <div className="sessions-list">
-            {sessions.map((session) => {
-              const responseData = JSON.parse(session.response);
+          {sessions.map((session) => {
+            const responseData = JSON.parse(session.response);
 
-              return (
-                <div key={session.id} className="session-item">
+            return (
+              <Accordion key={session.id} style={{ marginBottom: "10px" }}>
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls={`panel-${session.id}-content`}
+                  id={`panel-${session.id}-header`}
+                >
+                  <Typography className="header-item">
+                    <span className="icon">🕒</span>{" "}
+                    {formatDate(session.time_stamp)}
+                  </Typography>
+                </AccordionSummary>
+                <AccordionDetails>
                   <div className="session-content">
-                    {/* Header Info */}
                     <div className="session-header">
-                      <div className="header-item">
-                        <span className="icon">🕒</span>
-                        <span>{formatDate(session.time_stamp)}</span>
-                      </div>
                       <div className="header-item">
                         <span className="icon">📄</span>
                         <span>{session.file_name}</span>
@@ -105,8 +117,6 @@ const SessionHistory = () => {
                         <span className="capitalize">{session.industry}</span>
                       </div>
                     </div>
-
-                    {/* Business Overview */}
                     {responseData.business_overview && (
                       <div className="overview-section">
                         <h4 className="section-title">Business Overview</h4>
@@ -130,8 +140,6 @@ const SessionHistory = () => {
                         </div>
                       </div>
                     )}
-
-                    {/* Recipe Sections */}
                     <div className="recipe-section">
                       <h4 className="section-title">Recipe Details</h4>
                       <div className="recipe-grid">
@@ -155,10 +163,10 @@ const SessionHistory = () => {
                       </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
+                </AccordionDetails>
+              </Accordion>
+            );
+          })}
         </div>
       </div>
     </div>

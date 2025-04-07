@@ -89,19 +89,39 @@ const AccountingRecipe = () => {
 
     // Create a new document
     const doc = new Document({
+      numbering: {
+        config: [
+          {
+            reference: "my-numbering",
+            levels: [
+              {
+                level: 0,
+                format: "decimal",
+                text: "%1.",
+                alignment: "start",
+                style: {
+                  paragraph: {
+                    indent: { left: 720, hanging: 260 },
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      },
       sections: [
         {
           properties: {
             page: {
               margin: {
-                top: 1440, // 1 inch in twips (1440 twips = 1 inch)
+                top: 1440,
                 right: 1440,
                 bottom: 1440,
                 left: 1440,
               },
               size: {
-                width: 12240, // 8.5 inches in twips
-                height: 15840, // 11 inches in twips
+                width: 12240,
+                height: 15840,
               },
             },
           },
@@ -118,48 +138,74 @@ const AccountingRecipe = () => {
               text: "Business Overview",
               heading: HeadingLevel.HEADING_2,
             }),
-            createKeyValueTable([
-              {
-                key: "Industry Type",
-                value: response.business_overview.industry_type || "N/A",
-              },
-              { key: "Name", value: response.business_overview.name || "N/A" },
-              { key: "Type", value: response.business_overview.type || "N/A" },
-              {
-                key: "Sales Regions",
-                value:
-                  response.business_overview.sales_bifurcation?.join(", ") ||
-                  "N/A",
-              },
-            ]),
 
-            // Additional sections
-            ...createSection("Capital", response.capital?.points),
-            ...createSection(
+            // Convert business overview to bullet points
+            new Paragraph({
+              text: `Industry Type: ${
+                response.business_overview.industry_type || "N/A"
+              }`,
+              bullet: {
+                level: 0,
+              },
+            }),
+            new Paragraph({
+              text: `Name: ${response.business_overview.name || "N/A"}`,
+              bullet: {
+                level: 0,
+              },
+            }),
+            new Paragraph({
+              text: `Type: ${response.business_overview.type || "N/A"}`,
+              bullet: {
+                level: 0,
+              },
+            }),
+            new Paragraph({
+              text: `Sales Regions: ${
+                response.business_overview.sales_bifurcation?.join(", ") ||
+                "N/A"
+              }`,
+              bullet: {
+                level: 0,
+              },
+            }),
+
+            // Additional sections as bullet points
+            ...createBulletedSection("Capital", response.capital?.points),
+            ...createBulletedSection(
               "Cash and Cash Equivalent",
               response.cash_and_cash_equivalent?.points
             ),
-            ...createSection(
+            ...createBulletedSection(
               "Duties and Taxes",
               response.duties_and_taxes?.points
             ),
-            ...createSection(
+            ...createBulletedSection(
               "Indirect Expenses",
               response.indirect_expenses?.points
             ),
-            ...createSection(
+            ...createBulletedSection(
               "Opening Balances",
               response.opening_balances?.points
             ),
-            ...createSection("Purchases", response.purchases?.points),
-            ...createSection("Sales", response.sales?.points),
-            ...createSection("Sales Return", response.sales_return?.points),
-            ...createSection("Secured Loans", response.secured_loans?.points),
-            ...createSection(
+            ...createBulletedSection("Purchases", response.purchases?.points),
+            ...createBulletedSection("Sales", response.sales?.points),
+            ...createBulletedSection(
+              "Sales Return",
+              response.sales_return?.points
+            ),
+            ...createBulletedSection(
+              "Secured Loans",
+              response.secured_loans?.points
+            ),
+            ...createBulletedSection(
               "Sundry Creditors",
               response.sundry_creditors?.points
             ),
-            ...createSection("Sundry Debtors", response.sundry_debtors?.points),
+            ...createBulletedSection(
+              "Sundry Debtors",
+              response.sundry_debtors?.points
+            ),
           ],
         },
       ],
@@ -181,107 +227,31 @@ const AccountingRecipe = () => {
       });
   };
 
-  // Helper function to create a section with heading and content
-  const createSection = (title, points) => {
+  // Helper function to create a bulleted section with heading and content
+  const createBulletedSection = (title, points) => {
     if (!points || points.length === 0) return [];
 
-    return [
+    const paragraphs = [
       new Paragraph({
         text: title,
         heading: HeadingLevel.HEADING_2,
       }),
-      createStringArrayTable(points),
     ];
-  };
 
-  // Helper function to create a table for key-value pairs
-  const createKeyValueTable = (pairs) => {
-    const rows = pairs.map((pair) => {
-      return new TableRow({
-        children: [
-          new TableCell({
-            children: [new Paragraph(pair.key)],
-            width: {
-              size: 30,
-              type: "percentage",
-            },
-          }),
-          new TableCell({
-            children: [new Paragraph(pair.value)],
-            width: {
-              size: 70,
-              type: "percentage",
-            },
-          }),
-        ],
-      });
+    // Add numbered paragraphs for each point
+    points.forEach((point, index) => {
+      paragraphs.push(
+        new Paragraph({
+          text: point,
+          numbering: {
+            reference: "my-numbering",
+            level: 0,
+          },
+        })
+      );
     });
 
-    return new Table({
-      rows: rows,
-      width: {
-        size: 100,
-        type: "percentage",
-      },
-      columnWidths: [2880, 6720],
-      borders: {
-        top: { style: BorderStyle.SINGLE, size: 1 },
-        bottom: { style: BorderStyle.SINGLE, size: 1 },
-        left: { style: BorderStyle.SINGLE, size: 1 },
-        right: { style: BorderStyle.SINGLE, size: 1 },
-        insideHorizontal: { style: BorderStyle.SINGLE, size: 1 },
-        insideVertical: { style: BorderStyle.SINGLE, size: 1 },
-      },
-    });
-  };
-
-  // Helper function to create a table for string arrays
-  const createStringArrayTable = (items) => {
-    if (!items || items.length === 0) {
-      return new Paragraph("No data available");
-    }
-
-    const rows = items.map((item, index) => {
-      return new TableRow({
-        children: [
-          new TableCell({
-            children: [new Paragraph(`${index + 1}`)],
-            width: {
-              size: 10,
-              type: "percentage",
-            },
-          }),
-          new TableCell({
-            children: [
-              new Paragraph(
-                typeof item === "string" ? item : JSON.stringify(item)
-              ),
-            ],
-            width: {
-              size: 90,
-              type: "percentage",
-            },
-          }),
-        ],
-      });
-    });
-
-    return new Table({
-      rows: rows,
-      width: {
-        size: 100,
-        type: "percentage",
-      },
-      columnWidths: [960, 8640],
-      borders: {
-        top: { style: BorderStyle.SINGLE, size: 1 },
-        bottom: { style: BorderStyle.SINGLE, size: 1 },
-        left: { style: BorderStyle.SINGLE, size: 1 },
-        right: { style: BorderStyle.SINGLE, size: 1 },
-        insideHorizontal: { style: BorderStyle.SINGLE, size: 1 },
-        insideVertical: { style: BorderStyle.SINGLE, size: 1 },
-      },
-    });
+    return paragraphs;
   };
 
   const handleSubmit = async () => {

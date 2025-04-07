@@ -55,7 +55,12 @@ const SessionHistory = () => {
         }
       );
 
-      setSessions(response.data);
+      // Sort sessions by timestamp (newest first)
+      const sortedSessions = response.data.sort(
+        (a, b) => new Date(b.time_stamp) - new Date(a.time_stamp)
+      );
+
+      setSessions(sortedSessions);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -100,10 +105,15 @@ const SessionHistory = () => {
                   aria-controls={`panel-${session.id}-content`}
                   id={`panel-${session.id}-header`}
                 >
-                  <Typography className="header-item">
-                    <span className="icon">🕒</span>{" "}
-                    {formatDate(session.time_stamp)}
-                  </Typography>
+                  <div className="summary-content">
+                    <Typography className="recipe-name">
+                      Recipe {session.id}
+                    </Typography>
+                    <Typography className="timestamp">
+                      <span className="icon">🕒</span>{" "}
+                      {formatDate(session.time_stamp)}
+                    </Typography>
+                  </div>
                 </AccordionSummary>
                 <AccordionDetails>
                   <div className="session-content">

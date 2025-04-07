@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from "react";
 import "./AccountingRecipe.css";
 import axios from "axios";
+import {
+  Document,
+  Packer,
+  Paragraph,
+  TextRun,
+  HeadingLevel,
+  Table,
+  TableRow,
+  TableCell,
+  BorderStyle,
+} from "docx";
+import { saveAs } from "file-saver";
 
 const AccountingRecipe = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -66,6 +78,210 @@ const AccountingRecipe = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Function to export data to Word document
+  const handleExportToWord = () => {
+    if (!response) {
+      setError("No data available to export");
+      return;
+    }
+
+    // Create a new document
+    const doc = new Document({
+      sections: [
+        {
+          properties: {
+            page: {
+              margin: {
+                top: 1440, // 1 inch in twips (1440 twips = 1 inch)
+                right: 1440,
+                bottom: 1440,
+                left: 1440,
+              },
+              size: {
+                width: 12240, // 8.5 inches in twips
+                height: 15840, // 11 inches in twips
+              },
+            },
+          },
+          children: [
+            new Paragraph({
+              text: `${
+                response.business_overview.industry_type || "Business"
+              } Accounting Recipe`,
+              heading: HeadingLevel.HEADING_1,
+            }),
+
+            // Business Overview Section
+            new Paragraph({
+              text: "Business Overview",
+              heading: HeadingLevel.HEADING_2,
+            }),
+            createKeyValueTable([
+              {
+                key: "Industry Type",
+                value: response.business_overview.industry_type || "N/A",
+              },
+              { key: "Name", value: response.business_overview.name || "N/A" },
+              { key: "Type", value: response.business_overview.type || "N/A" },
+              {
+                key: "Sales Regions",
+                value:
+                  response.business_overview.sales_bifurcation?.join(", ") ||
+                  "N/A",
+              },
+            ]),
+
+            // Additional sections
+            ...createSection("Capital", response.capital?.points),
+            ...createSection(
+              "Cash and Cash Equivalent",
+              response.cash_and_cash_equivalent?.points
+            ),
+            ...createSection(
+              "Duties and Taxes",
+              response.duties_and_taxes?.points
+            ),
+            ...createSection(
+              "Indirect Expenses",
+              response.indirect_expenses?.points
+            ),
+            ...createSection(
+              "Opening Balances",
+              response.opening_balances?.points
+            ),
+            ...createSection("Purchases", response.purchases?.points),
+            ...createSection("Sales", response.sales?.points),
+            ...createSection("Sales Return", response.sales_return?.points),
+            ...createSection("Secured Loans", response.secured_loans?.points),
+            ...createSection(
+              "Sundry Creditors",
+              response.sundry_creditors?.points
+            ),
+            ...createSection("Sundry Debtors", response.sundry_debtors?.points),
+          ],
+        },
+      ],
+    });
+
+    // Generate and save document
+    Packer.toBlob(doc)
+      .then((blob) => {
+        saveAs(
+          blob,
+          `${
+            response.business_overview.industry_type || "Business"
+          }_Accounting_Recipe.docx`
+        );
+        setSuccessMessage("Document exported successfully");
+      })
+      .catch((error) => {
+        setError("Failed to export document: " + error.message);
+      });
+  };
+
+  // Helper function to create a section with heading and content
+  const createSection = (title, points) => {
+    if (!points || points.length === 0) return [];
+
+    return [
+      new Paragraph({
+        text: title,
+        heading: HeadingLevel.HEADING_2,
+      }),
+      createStringArrayTable(points),
+    ];
+  };
+
+  // Helper function to create a table for key-value pairs
+  const createKeyValueTable = (pairs) => {
+    const rows = pairs.map((pair) => {
+      return new TableRow({
+        children: [
+          new TableCell({
+            children: [new Paragraph(pair.key)],
+            width: {
+              size: 30,
+              type: "percentage",
+            },
+          }),
+          new TableCell({
+            children: [new Paragraph(pair.value)],
+            width: {
+              size: 70,
+              type: "percentage",
+            },
+          }),
+        ],
+      });
+    });
+
+    return new Table({
+      rows: rows,
+      width: {
+        size: 100,
+        type: "percentage",
+      },
+      columnWidths: [2880, 6720],
+      borders: {
+        top: { style: BorderStyle.SINGLE, size: 1 },
+        bottom: { style: BorderStyle.SINGLE, size: 1 },
+        left: { style: BorderStyle.SINGLE, size: 1 },
+        right: { style: BorderStyle.SINGLE, size: 1 },
+        insideHorizontal: { style: BorderStyle.SINGLE, size: 1 },
+        insideVertical: { style: BorderStyle.SINGLE, size: 1 },
+      },
+    });
+  };
+
+  // Helper function to create a table for string arrays
+  const createStringArrayTable = (items) => {
+    if (!items || items.length === 0) {
+      return new Paragraph("No data available");
+    }
+
+    const rows = items.map((item, index) => {
+      return new TableRow({
+        children: [
+          new TableCell({
+            children: [new Paragraph(`${index + 1}`)],
+            width: {
+              size: 10,
+              type: "percentage",
+            },
+          }),
+          new TableCell({
+            children: [
+              new Paragraph(
+                typeof item === "string" ? item : JSON.stringify(item)
+              ),
+            ],
+            width: {
+              size: 90,
+              type: "percentage",
+            },
+          }),
+        ],
+      });
+    });
+
+    return new Table({
+      rows: rows,
+      width: {
+        size: 100,
+        type: "percentage",
+      },
+      columnWidths: [960, 8640],
+      borders: {
+        top: { style: BorderStyle.SINGLE, size: 1 },
+        bottom: { style: BorderStyle.SINGLE, size: 1 },
+        left: { style: BorderStyle.SINGLE, size: 1 },
+        right: { style: BorderStyle.SINGLE, size: 1 },
+        insideHorizontal: { style: BorderStyle.SINGLE, size: 1 },
+        insideVertical: { style: BorderStyle.SINGLE, size: 1 },
+      },
+    });
   };
 
   const handleSubmit = async () => {
@@ -197,13 +413,22 @@ const AccountingRecipe = () => {
         <div className="response-container">
           <div className="response-header">
             <h2 className="container-title">Detailed Recipe</h2>
-            <button
-              className="save-button"
-              onClick={handleSave}
-              disabled={!response}
-            >
-              {isLoading && response ? "Saving..." : "Save Recipe"}
-            </button>
+            <div className="action-buttons">
+              <button
+                className="export-button"
+                onClick={handleExportToWord}
+                disabled={!response}
+              >
+                Export to Word
+              </button>
+              <button
+                className="save-button"
+                onClick={handleSave}
+                disabled={!response}
+              >
+                {isLoading && response ? "Saving..." : "Save Recipe"}
+              </button>
+            </div>
           </div>
 
           <div className="response-section">

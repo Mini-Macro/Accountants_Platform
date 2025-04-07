@@ -1,18 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./AccountingRecipe.css";
 import axios from "axios";
-import {
-  Document,
-  Packer,
-  Paragraph,
-  TextRun,
-  HeadingLevel,
-  Table,
-  TableRow,
-  TableCell,
-  BorderStyle,
-} from "docx";
+import { Document, Packer, Paragraph, HeadingLevel } from "docx";
 import { saveAs } from "file-saver";
+import { supabase } from "../../supabaseClient";
 
 const AccountingRecipe = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -65,12 +56,18 @@ const AccountingRecipe = () => {
     setIsLoading(true);
     setError(null);
     setSuccessMessage(null);
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    const user_id = session.user.id;
+
     try {
       await axios.post("http://127.0.0.1:8000/session_history/", {
         file_name: selectedFile.name,
         industry: selectedIndustry,
         response: JSON.stringify(response),
-        user_id: "23126e86-8ae4-41bd-9d22-21937a7f2378",
+        user_id: user_id,
       });
       setSuccessMessage("Recipe saved successfully");
     } catch (error) {

@@ -87,17 +87,17 @@ const AccountingRecipe = () => {
       return;
     }
 
-    // Create a new document
+    // Create a new document with a single bullet point reference
     const doc = new Document({
       numbering: {
         config: [
           {
-            reference: "my-numbering",
+            reference: "bullet-points",
             levels: [
               {
                 level: 0,
-                format: "decimal",
-                text: "%1.",
+                format: "bullet",
+                text: "•",
                 alignment: "start",
                 style: {
                   paragraph: {
@@ -144,19 +144,22 @@ const AccountingRecipe = () => {
               text: `Industry Type: ${
                 response.business_overview.industry_type || "N/A"
               }`,
-              bullet: {
+              numbering: {
+                reference: "bullet-points",
                 level: 0,
               },
             }),
             new Paragraph({
               text: `Name: ${response.business_overview.name || "N/A"}`,
-              bullet: {
+              numbering: {
+                reference: "bullet-points",
                 level: 0,
               },
             }),
             new Paragraph({
               text: `Type: ${response.business_overview.type || "N/A"}`,
-              bullet: {
+              numbering: {
+                reference: "bullet-points",
                 level: 0,
               },
             }),
@@ -165,12 +168,13 @@ const AccountingRecipe = () => {
                 response.business_overview.sales_bifurcation?.join(", ") ||
                 "N/A"
               }`,
-              bullet: {
+              numbering: {
+                reference: "bullet-points",
                 level: 0,
               },
             }),
 
-            // Additional sections as bullet points
+            // Additional sections with bullet points
             ...createBulletedSection("Capital", response.capital?.points),
             ...createBulletedSection(
               "Cash and Cash Equivalent",
@@ -238,13 +242,13 @@ const AccountingRecipe = () => {
       }),
     ];
 
-    // Add numbered paragraphs for each point
-    points.forEach((point, index) => {
+    // Add bulleted paragraphs for each point
+    points.forEach((point) => {
       paragraphs.push(
         new Paragraph({
           text: point,
           numbering: {
-            reference: "my-numbering",
+            reference: "bullet-points",
             level: 0,
           },
         })

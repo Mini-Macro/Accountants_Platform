@@ -28,6 +28,7 @@ import BulkReplacer from "./components/BulkReplacerTool/BulkReplacer";
 import Prediction from "./components/PredictionTooljsx/Prediction";
 import AccountingRecipe from "./components/AccountingRecipe/AccountingRecipe";
 import SessionHistory from "./components/AccountingRecipe/SessionHistory";
+import RecipeDashboard from "./components/AccountingRecipe/RecipeDashboard";
 // import TaskManager from "./components/TaskManager/TaskManager";
 import ChecklistIcon from "@mui/icons-material/Checklist";
 import EditNoteIcon from "@mui/icons-material/EditNote";
@@ -373,7 +374,7 @@ export default function SideBar({ onLogout }) {
 
           {/* --------------------Accounting Recipes---------------------- */}
 
-          <ListItem
+          {/* <ListItem
             disablePadding
             sx={{ display: "block" }}
             onClick={() => setMenuData("AccountingRecipe")}
@@ -399,10 +400,10 @@ export default function SideBar({ onLogout }) {
                 sx={{ opacity: open ? 1 : 0 }}
               />
             </ListItemButton>
-          </ListItem>
+          </ListItem> */}
 
           {/* --------------------Session History---------------------- */}
-          <ListItem
+          {/* <ListItem
             disablePadding
             sx={{ display: "block" }}
             onClick={() => setMenuData("SessionHistory")}
@@ -428,6 +429,35 @@ export default function SideBar({ onLogout }) {
                 sx={{ opacity: open ? 1 : 0 }}
               />
             </ListItemButton>
+          </ListItem> */}
+
+          {/* --------------------Recipe Dashboard---------------------- */}
+          <ListItem
+            disablePadding
+            sx={{ display: "block" }}
+            onClick={() => setMenuData("RecipeDashboard")}
+          >
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? "initial" : "center",
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : "auto",
+                  justifyContent: "center",
+                }}
+              >
+                <EditNoteIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary="RecipeDashboard"
+                sx={{ opacity: open ? 1 : 0 }}
+              />
+            </ListItemButton>
           </ListItem>
         </List>
       </Drawer>
@@ -435,7 +465,7 @@ export default function SideBar({ onLogout }) {
         component="main"
         sx={{
           flexGrow: 1,
-          p: 4,
+          p: 1,
         }}
       >
         {/* <DrawerHeader /> */}
@@ -445,8 +475,9 @@ export default function SideBar({ onLogout }) {
         {menuData == "BulkReplacer" && <BulkReplacer />}
         {menuData == "PredictionTool" && <Prediction />}
         {menuData == "TaskManager" && <TaskManager />}
-        {menuData == "AccountingRecipe" && <AccountingRecipe />}
-        {menuData == "SessionHistory" && <SessionHistory />}
+        {/* {menuData == "AccountingRecipe" && <AccountingRecipe />} */}
+        {/* {menuData == "SessionHistory" && <SessionHistory />} */}
+        {menuData == "RecipeDashboard" && <RecipeDashboard />}
       </Box>
     </Box>
   );

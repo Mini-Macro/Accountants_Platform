@@ -1,5 +1,9 @@
 .session-history-container {
-  padding: 20px;
+  max-height: 500px;
+  overflow-y: auto;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
   max-width: 1200px;
   margin: 0 auto;
 }

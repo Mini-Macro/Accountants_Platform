@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./AccountingRecipe.css";
 import axios from "axios";
+import { Document, Packer, Paragraph, HeadingLevel } from "docx";
+import { saveAs } from "file-saver";
+import { supabase } from "../../supabaseClient";
 
 const AccountingRecipe = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -53,12 +56,18 @@ const AccountingRecipe = () => {
     setIsLoading(true);
     setError(null);
     setSuccessMessage(null);
+
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    const user_id = session.user.id;
+
     try {
       await axios.post("http://127.0.0.1:8000/session_history/", {
         file_name: selectedFile.name,
         industry: selectedIndustry,
         response: JSON.stringify(response),
-        user_id: "23126e86-8ae4-41bd-9d22-21937a7f2378",
+        user_id: user_id,
       });
       setSuccessMessage("Recipe saved successfully");
     } catch (error) {
@@ -66,6 +75,184 @@ const AccountingRecipe = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Function to export data to Word document
+  const handleExportToWord = () => {
+    if (!response) {
+      setError("No data available to export");
+      return;
+    }
+
+    // Create a new document with a single bullet point reference
+    const doc = new Document({
+      numbering: {
+        config: [
+          {
+            reference: "bullet-points",
+            levels: [
+              {
+                level: 0,
+                format: "bullet",
+                text: "•",
+                alignment: "start",
+                style: {
+                  paragraph: {
+                    indent: { left: 720, hanging: 260 },
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      },
+      sections: [
+        {
+          properties: {
+            page: {
+              margin: {
+                top: 1440,
+                right: 1440,
+                bottom: 1440,
+                left: 1440,
+              },
+              size: {
+                width: 12240,
+                height: 15840,
+              },
+            },
+          },
+          children: [
+            new Paragraph({
+              text: `${
+                response.business_overview.industry_type || "Business"
+              } Accounting Recipe`,
+              heading: HeadingLevel.HEADING_1,
+            }),
+
+            // Business Overview Section
+            new Paragraph({
+              text: "Business Overview",
+              heading: HeadingLevel.HEADING_2,
+            }),
+
+            // Convert business overview to bullet points
+            new Paragraph({
+              text: `Industry Type: ${
+                response.business_overview.industry_type || "N/A"
+              }`,
+              numbering: {
+                reference: "bullet-points",
+                level: 0,
+              },
+            }),
+            new Paragraph({
+              text: `Name: ${response.business_overview.name || "N/A"}`,
+              numbering: {
+                reference: "bullet-points",
+                level: 0,
+              },
+            }),
+            new Paragraph({
+              text: `Type: ${response.business_overview.type || "N/A"}`,
+              numbering: {
+                reference: "bullet-points",
+                level: 0,
+              },
+            }),
+            new Paragraph({
+              text: `Sales Regions: ${
+                response.business_overview.sales_bifurcation?.join(", ") ||
+                "N/A"
+              }`,
+              numbering: {
+                reference: "bullet-points",
+                level: 0,
+              },
+            }),
+
+            // Additional sections with bullet points
+            ...createBulletedSection("Capital", response.capital?.points),
+            ...createBulletedSection(
+              "Cash and Cash Equivalent",
+              response.cash_and_cash_equivalent?.points
+            ),
+            ...createBulletedSection(
+              "Duties and Taxes",
+              response.duties_and_taxes?.points
+            ),
+            ...createBulletedSection(
+              "Indirect Expenses",
+              response.indirect_expenses?.points
+            ),
+            ...createBulletedSection(
+              "Opening Balances",
+              response.opening_balances?.points
+            ),
+            ...createBulletedSection("Purchases", response.purchases?.points),
+            ...createBulletedSection("Sales", response.sales?.points),
+            ...createBulletedSection(
+              "Sales Return",
+              response.sales_return?.points
+            ),
+            ...createBulletedSection(
+              "Secured Loans",
+              response.secured_loans?.points
+            ),
+            ...createBulletedSection(
+              "Sundry Creditors",
+              response.sundry_creditors?.points
+            ),
+            ...createBulletedSection(
+              "Sundry Debtors",
+              response.sundry_debtors?.points
+            ),
+          ],
+        },
+      ],
+    });
+
+    // Generate and save document
+    Packer.toBlob(doc)
+      .then((blob) => {
+        saveAs(
+          blob,
+          `${
+            response.business_overview.industry_type || "Business"
+          }_Accounting_Recipe.docx`
+        );
+        setSuccessMessage("Document exported successfully");
+      })
+      .catch((error) => {
+        setError("Failed to export document: " + error.message);
+      });
+  };
+
+  // Helper function to create a bulleted section with heading and content
+  const createBulletedSection = (title, points) => {
+    if (!points || points.length === 0) return [];
+
+    const paragraphs = [
+      new Paragraph({
+        text: title,
+        heading: HeadingLevel.HEADING_2,
+      }),
+    ];
+
+    // Add bulleted paragraphs for each point
+    points.forEach((point) => {
+      paragraphs.push(
+        new Paragraph({
+          text: point,
+          numbering: {
+            reference: "bullet-points",
+            level: 0,
+          },
+        })
+      );
+    });
+
+    return paragraphs;
   };
 
   const handleSubmit = async () => {
@@ -170,7 +357,6 @@ const AccountingRecipe = () => {
                 </div>
               ) : (
                 <div className="upload-placeholder">
-                  <div className="upload-icon">⭐</div>
                   <span>Click to upload or drag and drop</span>
                   <span className="file-types">TXT files only (max 10MB)</span>
                 </div>
@@ -198,13 +384,22 @@ const AccountingRecipe = () => {
         <div className="response-container">
           <div className="response-header">
             <h2 className="container-title">Detailed Recipe</h2>
-            <button
-              className="save-button"
-              onClick={handleSave}
-              disabled={!response}
-            >
-              {isLoading && response ? "Saving..." : "Save Recipe"}
-            </button>
+            <div className="action-buttons">
+              <button
+                className="export-button"
+                onClick={handleExportToWord}
+                disabled={!response}
+              >
+                Export to Word
+              </button>
+              <button
+                className="save-button"
+                onClick={handleSave}
+                disabled={!response}
+              >
+                {isLoading && response ? "Saving..." : "Save Recipe"}
+              </button>
+            </div>
           </div>
 
           <div className="response-section">

@@ -316,6 +316,7 @@ const AccountingRecipe = () => {
     }
     setIsLoading(true);
     setError(null);
+    setSuccessMessage(null);
     setResponse(null);
 
     try {

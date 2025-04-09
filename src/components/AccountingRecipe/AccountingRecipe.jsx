@@ -65,6 +65,7 @@ const AccountingRecipe = () => {
     "Construction",
     "Hospitality",
     "Education",
+    "Loan Recovery Agency",
   ];
 
   const handleFileChange = (event) => {

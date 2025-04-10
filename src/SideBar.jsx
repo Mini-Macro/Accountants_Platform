@@ -38,6 +38,16 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import FinkeepLogo from "./assets/FinkeepLogo.png";
 const drawerWidth = 240;
+// Icons import
+import PdfIcon from "./assets/PdfIcon.png";
+import CheckList from "./assets/CheckList.png";
+import ToDoList from "./assets/ToDoList.png";
+import Replace from "./assets/Replace.png";
+import exchange from "./assets/exchange.png";
+import AccountingRecipeIcon from "./assets/AccountingRecipeIcon.png";
+import GstIcon from "./assets/GstIcon.png";
+import AsIcon from "./assets/AsIcon.png";
+import PredictionIcon from "./assets/PredictionIcon.png";
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -219,7 +229,12 @@ export default function SideBar({ onLogout }) {
                   justifyContent: "center",
                 }}
               >
-                <ArticleIcon />
+                <img
+                  src={AsIcon}
+                  alt="AsIcon"
+                  style={{ width: 24, height: 24 }}
+                />
+                {/* <ArticleIcon /> */}
               </ListItemIcon>
               <ListItemText primary="AsRecon" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
@@ -246,7 +261,12 @@ export default function SideBar({ onLogout }) {
                   justifyContent: "center",
                 }}
               >
-                <ContactPageIcon />
+                <img
+                  src={GstIcon}
+                  alt="GstIcon"
+                  style={{ width: 24, height: 24 }}
+                />
+                {/* <ContactPageIcon /> */}
               </ListItemIcon>
               <ListItemText primary="GstTool" sx={{ opacity: open ? 1 : 0 }} />
             </ListItemButton>
@@ -273,7 +293,12 @@ export default function SideBar({ onLogout }) {
                   justifyContent: "center",
                 }}
               >
-                <ReceiptIcon />
+                {/* <ReceiptIcon /> */}
+                <img
+                  src={PdfIcon}
+                  alt="PDF Icon"
+                  style={{ width: 24, height: 24 }}
+                />
               </ListItemIcon>
               <ListItemText
                 primary="BankStatement"
@@ -303,7 +328,12 @@ export default function SideBar({ onLogout }) {
                   justifyContent: "center",
                 }}
               >
-                <CachedIcon />
+                {/* <CachedIcon /> */}
+                <img
+                  src={exchange}
+                  alt="Exchange Icon"
+                  style={{ width: 24, height: 24 }}
+                />
               </ListItemIcon>
               <ListItemText
                 primary="BulkReplacer"
@@ -333,7 +363,12 @@ export default function SideBar({ onLogout }) {
                   justifyContent: "center",
                 }}
               >
-                <FactCheckIcon />
+                <img
+                  src={PredictionIcon}
+                  alt="PredictionIcon"
+                  style={{ width: 24, height: 24 }}
+                />
+                {/* <FactCheckIcon /> */}
               </ListItemIcon>
               <ListItemText
                 primary="PredictionTool"
@@ -363,7 +398,12 @@ export default function SideBar({ onLogout }) {
                   justifyContent: "center",
                 }}
               >
-                <ChecklistIcon />
+                <img
+                  src={ToDoList}
+                  alt="ToDoList"
+                  style={{ width: 24, height: 24 }}
+                />
+                {/* <ChecklistIcon /> */}
               </ListItemIcon>
               <ListItemText
                 primary="TaskManager"
@@ -451,7 +491,12 @@ export default function SideBar({ onLogout }) {
                   justifyContent: "center",
                 }}
               >
-                <EditNoteIcon />
+                <img
+                  src={AccountingRecipeIcon}
+                  alt="AccountingRecipe"
+                  style={{ width: 24, height: 24 }}
+                />
+                {/* <EditNoteIcon /> */}
               </ListItemIcon>
               <ListItemText
                 primary="RecipeDashboard"

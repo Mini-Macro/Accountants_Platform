@@ -468,6 +468,7 @@ export default function SideBar({ onLogout }) {
           p: 1,
         }}
       >
+        <Toolbar />
         {/* <DrawerHeader /> */}
         {menuData == "AsRecon" && <AsRecon />}
         {menuData == "GstTool" && <GstTool />}

@@ -60,7 +60,7 @@ function App() {
     <div className="app-container">
       {isAuthenticated ? (
         <>
-          <Box height={65} />
+          {/* <Box height={65} /> */}
           <SideBar onLogout={handleLogout} />
         </>
       ) : (

@@ -4,6 +4,10 @@
   padding: 20px;
   background-color: #ffffff;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  max-width: 600px;
+  margin: 0 auto;
+  border-radius: 4px;
+  margin-top: 40px;
 }
 
 .file-upload-container h2 {
@@ -17,6 +21,7 @@
   padding: 20px;
   cursor: pointer;
   background-color: #f9f9f9;
+  margin: 20px 0;
 }
 
 .upload-button {
@@ -53,4 +58,5 @@
 
 .error-message {
   color: red; /* Set text color to red */
+  margin-top: 10px;
 }

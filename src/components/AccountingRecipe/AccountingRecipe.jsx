@@ -12,17 +12,45 @@ const AccountingRecipe = () => {
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
+  const [fileContent, setFileContent] = useState(null);
 
   const STORAGE_KEY = "accountingRecipeData";
+  const INDUSTRY_KEY = "accountingRecipeIndustry";
+  const FILE_KEY = "accountingRecipeFile";
 
   useEffect(() => {
+    // Load saved data from session storage
     const savedData = sessionStorage.getItem(STORAGE_KEY);
+    const savedIndustry = sessionStorage.getItem(INDUSTRY_KEY);
+    const savedFile = sessionStorage.getItem(FILE_KEY);
+
     if (savedData) {
       try {
         const parsedData = JSON.parse(savedData);
         setResponse(parsedData);
       } catch (error) {
         console.error("Error parsing saved data:", error);
+      }
+    }
+
+    if (savedIndustry) {
+      setSelectedIndustry(savedIndustry);
+    }
+
+    if (savedFile) {
+      try {
+        const fileData = JSON.parse(savedFile);
+        // Create a new File object from the saved data
+        if (fileData.name && fileData.content) {
+          setFileContent(fileData.content);
+          // We can't directly create a File object with the same properties,
+          // but we can store enough information to display the filename
+          setSelectedFile({
+            name: fileData.name,
+          });
+        }
+      } catch (error) {
+        console.error("Error parsing saved file data:", error);
       }
     }
   }, []);
@@ -37,6 +65,7 @@ const AccountingRecipe = () => {
     "Construction",
     "Hospitality",
     "Education",
+    "Loan Recovery Agency",
   ];
 
   const handleFileChange = (event) => {
@@ -45,11 +74,36 @@ const AccountingRecipe = () => {
       if (!file.name.endsWith(".txt")) {
         setError("Only .txt files are accepted");
         setSelectedFile(null);
+        setFileContent(null);
+        sessionStorage.removeItem(FILE_KEY);
         return;
       }
+
       setSelectedFile(file);
       setError(null);
+
+      // Read file content and save to session storage
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const content = e.target.result;
+        setFileContent(content);
+
+        // Save file info to session storage
+        const fileData = {
+          name: file.name,
+          content: content,
+        };
+        sessionStorage.setItem(FILE_KEY, JSON.stringify(fileData));
+      };
+      reader.readAsText(file);
     }
+  };
+
+  // Update industry selection and save to session storage
+  const handleIndustryChange = (e) => {
+    const industry = e.target.value;
+    setSelectedIndustry(industry);
+    sessionStorage.setItem(INDUSTRY_KEY, industry);
   };
 
   const handleSave = async () => {
@@ -262,12 +316,28 @@ const AccountingRecipe = () => {
     }
     setIsLoading(true);
     setError(null);
+    setSuccessMessage(null);
     setResponse(null);
 
     try {
       // Create FormData object to send multipart/form-data
       const formData = new FormData();
-      formData.append("file", selectedFile);
+
+      // If we have a file from the input, use it directly
+      if (selectedFile instanceof File) {
+        formData.append("file", selectedFile);
+      }
+      // If we have a file from session storage, create a new Blob/File
+      else if (fileContent && selectedFile.name) {
+        const blob = new Blob([fileContent], { type: "text/plain" });
+        const file = new File([blob], selectedFile.name, {
+          type: "text/plain",
+        });
+        formData.append("file", file);
+      } else {
+        throw new Error("Invalid file data");
+      }
+
       formData.append("industry", selectedIndustry);
 
       const response = await fetch("http://127.0.0.1:8000/upload-files/", {
@@ -325,7 +395,7 @@ const AccountingRecipe = () => {
             <label>Industry Type</label>
             <select
               value={selectedIndustry}
-              onChange={(e) => setSelectedIndustry(e.target.value)}
+              onChange={handleIndustryChange}
               className="industry-select"
             >
               <option value="">Select industry</option>
@@ -390,6 +460,7 @@ const AccountingRecipe = () => {
                 onClick={handleExportToWord}
                 disabled={!response}
               >
+                <span className="button-icon">📄</span>
                 Export to Word
               </button>
               <button
@@ -397,6 +468,7 @@ const AccountingRecipe = () => {
                 onClick={handleSave}
                 disabled={!response}
               >
+                <span className="button-icon">💾</span>
                 {isLoading && response ? "Saving..." : "Save Recipe"}
               </button>
             </div>

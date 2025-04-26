@@ -4,6 +4,7 @@ import axios from "axios";
 import { Document, Packer, Paragraph, HeadingLevel } from "docx";
 import { saveAs } from "file-saver";
 import { supabase } from "../../supabaseClient";
+import FileUploadModal from "./FileUploadModal";
 
 const AccountingRecipe = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -13,6 +14,8 @@ const AccountingRecipe = () => {
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
   const [fileContent, setFileContent] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState(null);
 
   const STORAGE_KEY = "accountingRecipeData";
   const INDUSTRY_KEY = "accountingRecipeIndustry";
@@ -309,6 +312,14 @@ const AccountingRecipe = () => {
     return paragraphs;
   };
 
+  const handleOpenModal = (data) => {
+    setModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
   const handleSubmit = async () => {
     if (!selectedFile || !selectedIndustry) {
       setError("Please select both an industry and a file");
@@ -457,6 +468,14 @@ const AccountingRecipe = () => {
             <div className="action-buttons">
               <button
                 className="export-button"
+                onClick={handleOpenModal}
+                disabled={!response}
+              >
+                <span className="button-icon">📄</span>
+                Generate CSV
+              </button>
+              <button
+                className="export-button"
                 onClick={handleExportToWord}
                 disabled={!response}
               >
@@ -472,6 +491,7 @@ const AccountingRecipe = () => {
                 {isLoading && response ? "Saving..." : "Save Recipe"}
               </button>
             </div>
+            <FileUploadModal open={modalOpen} handleClose={handleCloseModal} />
           </div>
 
           <div className="response-section">

@@ -92,13 +92,13 @@ function FileUploadModal({ open, handleClose }) {
     try {
       // Create FormData object to send files and data
       const formData = new FormData();
-      formData.append("file1", file1);
-      formData.append("file2", file2);
+      formData.append("reporting_requirements", file1);
+      formData.append("accounting_recipe", file2);
       formData.append("client_id", companyId);
 
       // Send data to backend API using axios
       const response = await axios.post(
-        "http://localhost:8000/get_financial_data",
+        "http://localhost:8000/get_non_financial_data",
         formData,
         {
           headers: {
@@ -116,9 +116,20 @@ function FileUploadModal({ open, handleClose }) {
       // Note: we don't reset the form here since user needs to see what they submitted
     } catch (error) {
       console.error("Error submitting files:", error);
-      const errorMessage =
-        error.response?.data?.detail ||
-        "Failed to generate CSV. Please try again.";
+      // Fix: Handle error object properly to extract string message
+      let errorMessage = "Failed to generate CSV. Please try again.";
+
+      if (error.response?.data?.detail) {
+        // If error.response.data.detail is an object, convert it to string
+        if (typeof error.response.data.detail === "object") {
+          errorMessage = JSON.stringify(error.response.data.detail);
+        } else {
+          errorMessage = String(error.response.data.detail);
+        }
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
       setError(errorMessage);
     } finally {
       setIsProcessing(false);
@@ -234,7 +245,7 @@ function FileUploadModal({ open, handleClose }) {
       <DialogContent sx={{ pt: 0 }}>
         {error && (
           <Alert severity="error" sx={{ mb: 2, mt: 1 }}>
-            {error}
+            {typeof error === "object" ? JSON.stringify(error) : error}
           </Alert>
         )}
 

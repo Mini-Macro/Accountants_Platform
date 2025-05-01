@@ -1,0 +1,206 @@
+```json
+[
+  {
+    "table_name": "patients",
+    "description": "Master list of all patients registered at the hospital.",
+    "columns": [
+      {
+        "column_name": "patient_id",
+        "description": "Unique identifier for each patient (e.g., MRN - Medical Record Number)."
+      },
+      {
+        "column_name": "patient_name",
+        "description": "Full name of the patient."
+      },
+      {
+        "column_name": "date_of_birth",
+        "description": "Patient's date of birth."
+      },
+      {
+        "column_name": "gender",
+        "description": "Patient's gender (e.g., Male, Female, Other)."
+      },
+      {
+        "column_name": "registration_date",
+        "description": "Date when the patient was first registered."
+      }
+    ],
+    "sample_data": [
+      {"patient_id": "P00101", "patient_name": "Ramesh Kumar", "date_of_birth": "1985-03-15", "gender": "Male", "registration_date": "2023-01-10"},
+      {"patient_id": "P00102", "patient_name": "Sunita Sharma", "date_of_birth": "1992-07-22", "gender": "Female", "registration_date": "2023-01-15"},
+      {"patient_id": "P00103", "patient_name": "Amit Singh", "date_of_birth": "1978-11-05", "gender": "Male", "registration_date": "2023-02-01"},
+      {"patient_id": "P00104", "patient_name": "Priya Patel", "date_of_birth": "2001-01-30", "gender": "Female", "registration_date": "2023-02-20"},
+      {"patient_id": "P00105", "patient_name": "Vikram Desai", "date_of_birth": "1995-09-12", "gender": "Male", "registration_date": "2023-03-05"}
+    ]
+  },
+  {
+    "table_name": "patient_visits",
+    "description": "Records each instance a patient visits the hospital (OPD or IPD admission start). Addresses requirements 1, 2, 4.",
+    "columns": [
+      {
+        "column_name": "visit_id",
+        "description": "Unique identifier for each patient visit/admission."
+      },
+      {
+        "column_name": "patient_id",
+        "description": "Identifier linking to the 'patients' table."
+      },
+      {
+        "column_name": "visit_date",
+        "description": "Date of the visit or admission."
+      },
+      {
+        "column_name": "visit_type",
+        "description": "Type of visit (e.g., OPD, IPD)."
+      },
+      {
+        "column_name": "initial_referral_source",
+        "description": "How the patient came initially for this visit (e.g., Walk-in, Panel A Insurance, Employer XYZ, MJPJAY, CMRF)."
+      },
+      {
+        "column_name": "converted_to_walkin",
+        "description": "Flag (Yes/No) indicating if a panel patient was later treated/billed as walk-in/self-paying for this visit episode."
+      },
+      {
+         "column_name": "attending_doctor_id",
+         "description": "Identifier linking to the primary doctor for this visit/admission."
+      }
+    ],
+    "sample_data": [
+      {"visit_id": "V00201", "patient_id": "P00101", "visit_date": "2023-01-10", "visit_type": "OPD", "initial_referral_source": "Walk-in", "converted_to_walkin": "No", "attending_doctor_id": "D001"},
+      {"visit_id": "V00202", "patient_id": "P00102", "visit_date": "2023-01-15", "visit_type": "IPD", "initial_referral_source": "Panel A Insurance", "converted_to_walkin": "No", "attending_doctor_id": "D002"},
+      {"visit_id": "V00203", "patient_id": "P00101", "visit_date": "2023-03-01", "visit_type": "OPD", "initial_referral_source": "Walk-in", "converted_to_walkin": "No", "attending_doctor_id": "D001"},
+      {"visit_id": "V00204", "patient_id": "P00103", "visit_date": "2023-04-05", "visit_type": "IPD", "initial_referral_source": "Employer XYZ", "converted_to_walkin": "Yes", "attending_doctor_id": "D003"},
+      {"visit_id": "V00205", "patient_id": "P00104", "visit_date": "2023-05-10", "visit_type": "OPD", "initial_referral_source": "MJPJAY", "converted_to_walkin": "No", "attending_doctor_id": "D002"}
+    ]
+  },
+  {
+    "table_name": "doctors",
+    "description": "Master list of all doctors, including employees and on-call specialists.",
+    "columns": [
+      {
+        "column_name": "doctor_id",
+        "description": "Unique identifier for each doctor. Could potentially map to mst_employee.guid for employees."
+      },
+      {
+        "column_name": "doctor_name",
+        "description": "Full name of the doctor."
+      },
+      {
+        "column_name": "specialization",
+        "description": "Medical specialization (e.g., Cardiology, General Physician, Orthopedics)."
+      },
+      {
+        "column_name": "employment_type",
+        "description": "Type of employment (e.g., Employee, On-Call Specialist)."
+      }
+    ],
+    "sample_data": [
+      {"doctor_id": "D001", "doctor_name": "Dr. Anjali Mehta", "specialization": "General Physician", "employment_type": "Employee"},
+      {"doctor_id": "D002", "doctor_name": "Dr. Rajesh Singh", "specialization": "Cardiology", "employment_type": "Employee"},
+      {"doctor_id": "D003", "doctor_name": "Dr. Priya Sharma", "specialization": "Orthopedics", "employment_type": "On-Call Specialist"},
+      {"doctor_id": "D004", "doctor_name": "Dr. Mohan Verma", "specialization": "Pediatrics", "employment_type": "Employee"},
+      {"doctor_id": "D005", "doctor_name": "Dr. Sunita Rao", "specialization": "Neurology", "employment_type": "On-Call Specialist"}
+    ]
+  },
+  {
+    "table_name": "doctor_overtime",
+    "description": "Records overtime hours worked by doctors. Addresses requirement 3.",
+    "columns": [
+      {
+        "column_name": "overtime_record_id",
+        "description": "Unique identifier for the overtime record."
+      },
+      {
+        "column_name": "doctor_id",
+        "description": "Identifier linking to the 'doctors' table."
+      },
+      {
+        "column_name": "date",
+        "description": "Date for which overtime is recorded."
+      },
+      {
+        "column_name": "overtime_hours",
+        "description": "Number of overtime hours worked on that date."
+      }
+    ],
+    "sample_data": [
+       {"overtime_record_id": "OT001", "doctor_id": "D001", "date": "2023-06-10", "overtime_hours": 2.5},
+       {"overtime_record_id": "OT002", "doctor_id": "D002", "date": "2023-06-12", "overtime_hours": 3.0},
+       {"overtime_record_id": "OT003", "doctor_id": "D001", "date": "2023-06-15", "overtime_hours": 1.0},
+       {"overtime_record_id": "OT004", "doctor_id": "D004", "date": "2023-06-18", "overtime_hours": 4.0},
+       {"overtime_record_id": "OT005", "doctor_id": "D002", "date": "2023-06-20", "overtime_hours": 2.0}
+    ]
+  },
+  {
+    "table_name": "medical_camps",
+    "description": "Records details of medical camps conducted. Addresses requirement 5.",
+    "columns": [
+      {
+        "column_name": "camp_id",
+        "description": "Unique identifier for each medical camp."
+      },
+      {
+        "column_name": "camp_date",
+        "description": "Date the camp was conducted."
+      },
+      {
+        "column_name": "location",
+        "description": "Location where the camp was held."
+      },
+      {
+        "column_name": "camp_type",
+        "description": "Type of camp (e.g., Free, Subsidized, Paid)."
+      },
+      {
+        "column_name": "conducting_doctor_id",
+        "description": "Identifier of the primary doctor who conducted/led the camp, linking to 'doctors' table."
+      }
+    ],
+    "sample_data": [
+      {"camp_id": "C001", "camp_date": "2023-02-15", "location": "Village A", "camp_type": "Free", "conducting_doctor_id": "D001"},
+      {"camp_id": "C002", "camp_date": "2023-04-20", "location": "Community Hall B", "camp_type": "Free", "conducting_doctor_id": "D002"},
+      {"camp_id": "C003", "camp_date": "2023-07-01", "location": "Town Square C", "camp_type": "Subsidized", "conducting_doctor_id": "D004"},
+      {"camp_id": "C004", "camp_date": "2023-08-10", "location": "School D", "camp_type": "Free", "conducting_doctor_id": "D001"},
+      {"camp_id": "C005", "camp_date": "2023-09-05", "location": "Remote Area E", "camp_type": "Free", "conducting_doctor_id": "D003"}
+    ]
+  },
+   {
+    "table_name": "patient_outcomes",
+    "description": "Records the final outcome of patient admissions/critical treatments, focusing on mortality. Addresses requirement 6.",
+    "columns": [
+      {
+        "column_name": "outcome_id",
+        "description": "Unique identifier for the outcome record."
+      },
+      {
+        "column_name": "patient_id",
+        "description": "Identifier linking to the 'patients' table."
+      },
+      {
+        "column_name": "visit_id",
+        "description": "Identifier linking to the relevant 'patient_visits' record (likely an IPD visit)."
+      },
+       {
+        "column_name": "attending_doctor_id",
+        "description": "Identifier linking to the primary doctor responsible during the final phase or for the overall admission."
+      },
+      {
+        "column_name": "outcome",
+        "description": "Final outcome status (e.g., Deceased, Discharged, Transferred)."
+      },
+      {
+        "column_name": "outcome_date",
+        "description": "Date when the outcome occurred."
+      }
+    ],
+    "sample_data": [
+       {"outcome_id": "O001", "patient_id": "P00102", "visit_id": "V00202", "attending_doctor_id": "D002", "outcome": "Discharged", "outcome_date": "2023-01-25"},
+       {"outcome_id": "O002", "patient_id": "P00106", "visit_id": "V00206", "attending_doctor_id": "D003", "outcome": "Deceased", "outcome_date": "2023-04-15"},
+       {"outcome_id": "O003", "patient_id": "P00107", "visit_id": "V00207", "attending_doctor_id": "D002", "outcome": "Deceased", "outcome_date": "2023-05-20"},
+       {"outcome_id": "O004", "patient_id": "P00108", "visit_id": "V00208", "attending_doctor_id": "D001", "outcome": "Discharged", "outcome_date": "2023-06-10"},
+       {"outcome_id": "O005", "patient_id": "P00109", "visit_id": "V00209", "attending_doctor_id": "D002", "outcome": "Deceased", "outcome_date": "2023-07-05"}
+    ]
+  }
+]
+```

@@ -1,0 +1,317 @@
+[
+  {
+    "table_name": "PatientVisits",
+    "description": "Tracks each patient encounter, source, and attending doctor to identify unique/repeat visits and sources.",
+    "columns": [
+      {
+        "column_name": "VisitID",
+        "description": "Unique ID for the visit."
+      },
+      {
+        "column_name": "PatientID",
+        "description": "Unique ID for the patient."
+      },
+      {
+        "column_name": "PatientName",
+        "description": "Patient's full name."
+      },
+      {
+        "column_name": "VisitDate",
+        "description": "Date of visit (YYYY-MM-DD)."
+      },
+      {
+        "column_name": "VisitType",
+        "description": "Type of visit (e.g., OPD, IPD)."
+      },
+      {
+        "column_name": "ReferralSourceType",
+        "description": "How the patient came (e.g., Walk-in, Panel)."
+      },
+      {
+        "column_name": "ReferralSourceName",
+        "description": "Specific name of panel, employer, etc., or 'N/A'."
+      },
+      {
+        "column_name": "AttendingDoctorID",
+        "description": "Unique ID of the attending doctor."
+      },
+      {
+        "column_name": "AttendingDoctorName",
+        "description": "Name of the attending doctor."
+      }
+    ],
+    "sample_data": [
+      {
+        "VisitID": "V0001",
+        "PatientID": "P1001",
+        "PatientName": "Ramesh Kumar",
+        "VisitDate": "2023-10-01",
+        "VisitType": "OPD",
+        "ReferralSourceType": "Walk-in",
+        "ReferralSourceName": "N/A",
+        "AttendingDoctorID": "D01",
+        "AttendingDoctorName": "Dr. Anchal Baate"
+      },
+      {
+        "VisitID": "V0002",
+        "PatientID": "P1002",
+        "PatientName": "Sunita Devi",
+        "VisitDate": "2023-10-01",
+        "VisitType": "IPD",
+        "ReferralSourceType": "Panel",
+        "ReferralSourceName": "MediAssist Insurance",
+        "AttendingDoctorID": "D02",
+        "AttendingDoctorName": "Dr. Prabhakar Bhende"
+      },
+      {
+        "VisitID": "V0003",
+        "PatientID": "P1001",
+        "PatientName": "Ramesh Kumar",
+        "VisitDate": "2023-10-05",
+        "VisitType": "OPD",
+        "ReferralSourceType": "Walk-in",
+        "ReferralSourceName": "N/A",
+        "AttendingDoctorID": "D01",
+        "AttendingDoctorName": "Dr. Anchal Baate"
+      },
+      {
+        "VisitID": "V0004",
+        "PatientID": "P1003",
+        "PatientName": "Amit Singh",
+        "VisitDate": "2023-10-06",
+        "VisitType": "OPD",
+        "ReferralSourceType": "Employer",
+        "ReferralSourceName": "Tata Consultancy Services",
+        "AttendingDoctorID": "D03",
+        "AttendingDoctorName": "Dr. Ram Khujale"
+      },
+      {
+        "VisitID": "V0005",
+        "PatientID": "P1002",
+        "PatientName": "Sunita Devi",
+        "VisitDate": "2023-10-10",
+        "VisitType": "OPD",
+        "ReferralSourceType": "Walk-in",
+        "ReferralSourceName": "N/A",
+        "AttendingDoctorID": "D02",
+        "AttendingDoctorName": "Dr. Prabhakar Bhende"
+      }
+    ]
+  },
+  {
+    "table_name": "DoctorOvertime",
+    "description": "Tracks overtime hours logged by doctors.",
+    "columns": [
+      {
+        "column_name": "OvertimeRecordID",
+        "description": "Unique ID for this overtime entry."
+      },
+      {
+        "column_name": "DoctorID",
+        "description": "Unique ID of the doctor."
+      },
+      {
+        "column_name": "DoctorName",
+        "description": "Name of the doctor."
+      },
+      {
+        "column_name": "OvertimeDate",
+        "description": "Date overtime was worked (YYYY-MM-DD)."
+      },
+      {
+        "column_name": "OvertimeHours",
+        "description": "Number of overtime hours."
+      }
+    ],
+    "sample_data": [
+      {
+        "OvertimeRecordID": "OT001",
+        "DoctorID": "D02",
+        "DoctorName": "Dr. Prabhakar Bhende",
+        "OvertimeDate": "2023-10-03",
+        "OvertimeHours": 2.5
+      },
+      {
+        "OvertimeRecordID": "OT002",
+        "DoctorID": "D04",
+        "DoctorName": "Dr. Priti Kare",
+        "OvertimeDate": "2023-10-03",
+        "OvertimeHours": 3.0
+      },
+      {
+        "OvertimeRecordID": "OT003",
+        "DoctorID": "D02",
+        "DoctorName": "Dr. Prabhakar Bhende",
+        "OvertimeDate": "2023-10-07",
+        "OvertimeHours": 1.5
+      },
+      {
+        "OvertimeRecordID": "OT004",
+        "DoctorID": "D05",
+        "DoctorName": "Dr. Prakash Khusre",
+        "OvertimeDate": "2023-10-08",
+        "OvertimeHours": 4.0
+      },
+      {
+        "OvertimeRecordID": "OT005",
+        "DoctorID": "D04",
+        "DoctorName": "Dr. Priti Kare",
+        "OvertimeDate": "2023-10-11",
+        "OvertimeHours": 2.0
+      }
+    ]
+  },
+  {
+    "table_name": "MedicalCamps",
+    "description": "Tracks details of free medical camps conducted.",
+    "columns": [
+      {
+        "column_name": "CampID",
+        "description": "Unique ID for the camp."
+      },
+      {
+        "column_name": "CampDate",
+        "description": "Date camp was held (YYYY-MM-DD)."
+      },
+      {
+        "column_name": "CampLocation",
+        "description": "Place where the camp was held."
+      },
+      {
+        "column_name": "CampType",
+        "description": "Type or focus of the camp (e.g., General, Eye)."
+      },
+      {
+        "column_name": "ConductingDoctorID",
+        "description": "Unique ID of the primary doctor for the camp."
+      },
+      {
+        "column_name": "ConductingDoctorName",
+        "description": "Name of the conducting doctor."
+      }
+    ],
+    "sample_data": [
+      {
+        "CampID": "C001",
+        "CampDate": "2023-09-15",
+        "CampLocation": "Ashok Nagar Community Hall",
+        "CampType": "General Health Checkup",
+        "ConductingDoctorID": "D01",
+        "ConductingDoctorName": "Dr. Anchal Baate"
+      },
+      {
+        "CampID": "C002",
+        "CampDate": "2023-09-22",
+        "CampLocation": "Ramtek Village School",
+        "CampType": "Eye Camp",
+        "ConductingDoctorID": "D03",
+        "ConductingDoctorName": "Dr. Ram Khujale"
+      },
+      {
+        "CampID": "C003",
+        "CampDate": "2023-10-01",
+        "CampLocation": "Shivaji Park Ground",
+        "CampType": "Dental Camp",
+        "ConductingDoctorID": "D04",
+        "ConductingDoctorName": "Dr. Priti Kare"
+      },
+      {
+        "CampID": "C004",
+        "CampDate": "2023-10-08",
+        "CampLocation": "Gandhi Chowk Market Area",
+        "CampType": "General Health Checkup",
+        "ConductingDoctorID": "D01",
+        "ConductingDoctorName": "Dr. Anchal Baate"
+      },
+      {
+        "CampID": "C005",
+        "CampDate": "2023-10-15",
+        "CampLocation": "Seva Sadan Orphanage",
+        "CampType": "Pediatric Checkup",
+        "ConductingDoctorID": "D05",
+        "ConductingDoctorName": "Dr. Prakash Khusre"
+      }
+    ]
+  },
+  {
+    "table_name": "PatientMortality",
+    "description": "Tracks patient mortality events and the associated primary doctor.",
+    "columns": [
+      {
+        "column_name": "MortalityRecordID",
+        "description": "Unique ID for the mortality record."
+      },
+      {
+        "column_name": "PatientID",
+        "description": "Unique ID for the patient."
+      },
+      {
+        "column_name": "PatientName",
+        "description": "Patient's full name."
+      },
+      {
+        "column_name": "DateOfDeath",
+        "description": "Date of death (YYYY-MM-DD)."
+      },
+      {
+        "column_name": "AttendingDoctorIDAtDeath",
+        "description": "Unique ID of the doctor responsible at death."
+      },
+      {
+        "column_name": "AttendingDoctorName",
+        "description": "Name of the responsible doctor."
+      },
+      {
+        "column_name": "LocationOfDeath",
+        "description": "Where the death occurred (e.g., ICU, Ward)."
+      }
+    ],
+    "sample_data": [
+      {
+        "MortalityRecordID": "M001",
+        "PatientID": "P1015",
+        "PatientName": "Geeta Sharma",
+        "DateOfDeath": "2023-10-04",
+        "AttendingDoctorIDAtDeath": "D02",
+        "AttendingDoctorName": "Dr. Prabhakar Bhende",
+        "LocationOfDeath": "ICU"
+      },
+      {
+        "MortalityRecordID": "M002",
+        "PatientID": "P1028",
+        "PatientName": "Suresh Patil",
+        "DateOfDeath": "2023-10-09",
+        "AttendingDoctorIDAtDeath": "D05",
+        "AttendingDoctorName": "Dr. Prakash Khusre",
+        "LocationOfDeath": "General Ward"
+      },
+      {
+        "MortalityRecordID": "M003",
+        "PatientID": "P1009",
+        "PatientName": "Fatima Begum",
+        "DateOfDeath": "2023-10-12",
+        "AttendingDoctorIDAtDeath": "D02",
+        "AttendingDoctorName": "Dr. Prabhakar Bhende",
+        "LocationOfDeath": "ER"
+      },
+      {
+        "MortalityRecordID": "M004",
+        "PatientID": "P1035",
+        "PatientName": "Vikram Rathod",
+        "DateOfDeath": "2023-10-18",
+        "AttendingDoctorIDAtDeath": "D01",
+        "AttendingDoctorName": "Dr. Anchal Baate",
+        "LocationOfDeath": "ICU"
+      },
+      {
+        "MortalityRecordID": "M005",
+        "PatientID": "P1042",
+        "PatientName": "David Fernandes",
+        "DateOfDeath": "2023-10-21",
+        "AttendingDoctorIDAtDeath": "D03",
+        "AttendingDoctorName": "Dr. Ram Khujale",
+        "LocationOfDeath": "General Ward"
+      }
+    ]
+  }
+]

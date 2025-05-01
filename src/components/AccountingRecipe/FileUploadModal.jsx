@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import responseData from "./response.json"; // Mock data for testing
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -32,6 +31,28 @@ function FileUploadModal({ open, handleClose }) {
   const [error, setError] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [showTableSummary, setShowTableSummary] = useState(false);
+  const [tableData, setTableData] = useState([]);
+
+  // Function to parse response data with markdown code blocks
+  const parseResponseData = (data) => {
+    try {
+      if (typeof data === "string") {
+        // Remove the markdown code block markers if they exist
+        const jsonString = data
+          .replace(/```json\n?/g, "")
+          .replace(/```\n?/g, "")
+          .trim();
+        return JSON.parse(jsonString);
+      } else if (Array.isArray(data)) {
+        // If the data is already an array, use it directly
+        return data;
+      }
+      return []; // Return empty array as fallback
+    } catch (parseError) {
+      console.error("Error parsing data:", parseError);
+      throw new Error("Failed to parse the response data.");
+    }
+  };
 
   // Load mock company data when modal opens
   useEffect(() => {
@@ -88,17 +109,19 @@ function FileUploadModal({ open, handleClose }) {
     }
 
     setIsProcessing(true);
+    setError("");
 
     try {
       // Create FormData object to send files and data
       const formData = new FormData();
+
+      // field names should match what the backend expects
       formData.append("reporting_requirements", file1);
       formData.append("accounting_recipe", file2);
       formData.append("client_id", companyId);
 
-      // Send data to backend API using axios
       const response = await axios.post(
-        "http://localhost:8000/get_non_financial_data",
+        "http://127.0.0.1:8000/get_non_financial_data",
         formData,
         {
           headers: {
@@ -110,25 +133,24 @@ function FileUploadModal({ open, handleClose }) {
       const result = response.data;
       console.log("Response from API:", result);
 
-      // Show the table summary after successful API call
-      setShowTableSummary(true);
+      try {
+        // Use the parsing function to get structured data
+        const parsedData = parseResponseData(result);
+        setTableData(parsedData);
+
+        // Show the table summary after successful API call
+        setShowTableSummary(true);
+      } catch (error) {
+        setError(error.message);
+      }
 
       // Note: we don't reset the form here since user needs to see what they submitted
     } catch (error) {
       console.error("Error submitting files:", error);
-      // Fix: Handle error object properly to extract string message
-      let errorMessage = "Failed to generate CSV. Please try again.";
 
-      if (error.response?.data?.detail) {
-        // If error.response.data.detail is an object, convert it to string
-        if (typeof error.response.data.detail === "object") {
-          errorMessage = JSON.stringify(error.response.data.detail);
-        } else {
-          errorMessage = String(error.response.data.detail);
-        }
-      } else if (error.message) {
-        errorMessage = error.message;
-      }
+      const errorMessage = error.response?.data?.detail
+        ? String(error.response.data.detail)
+        : "Failed to generate CSV. Please try again.";
 
       setError(errorMessage);
     } finally {
@@ -143,6 +165,7 @@ function FileUploadModal({ open, handleClose }) {
     setSelectedCompany(null);
     setError("");
     setShowTableSummary(false);
+    setTableData([]);
     handleClose();
   };
 
@@ -151,7 +174,7 @@ function FileUploadModal({ open, handleClose }) {
     console.log("Approved tables");
 
     // Generate all CSV files for download
-    responseData.forEach((table) => {
+    tableData.forEach((table) => {
       if (table.sample_data && table.sample_data.length > 0) {
         generateAndDownloadCSV(table.sample_data, table.table_name);
       }
@@ -163,6 +186,7 @@ function FileUploadModal({ open, handleClose }) {
     setCompanyId("");
     setSelectedCompany(null);
     setShowTableSummary(false);
+    setTableData([]);
 
     handleClose();
   };
@@ -314,7 +338,7 @@ function FileUploadModal({ open, handleClose }) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {responseData.map((item, index) => (
+                  {tableData.map((item, index) => (
                     <TableRow
                       key={index}
                       sx={{

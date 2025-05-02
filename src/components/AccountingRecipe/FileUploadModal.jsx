@@ -1,27 +1,22 @@
 import React, { useState, useEffect } from "react";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import Alert from "@mui/material/Alert";
-import CircularProgress from "@mui/material/CircularProgress";
-import TextField from "@mui/material/TextField";
-import Autocomplete from "@mui/material/Autocomplete";
-import TableRow from "@mui/material/TableRow";
-import TableCell from "@mui/material/TableCell";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import Paper from "@mui/material/Paper";
-import DownloadIcon from "@mui/icons-material/Download";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Box,
+  Typography,
+  Alert,
+  CircularProgress,
+  TextField,
+  Autocomplete,
+} from "@mui/material";
 import axios from "axios";
+import FileUploadBox from "./ChildComponents/FileUploadBox";
+import ResultTable from "./ChildComponents/ResultTable";
 
-// Modal component for file upload
+// Main component
 function FileUploadModal({ open, handleClose }) {
   const [file1, setFile1] = useState(null);
   const [file2, setFile2] = useState(null);
@@ -30,8 +25,22 @@ function FileUploadModal({ open, handleClose }) {
   const [companies, setCompanies] = useState([]);
   const [error, setError] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
-  const [showTableSummary, setShowTableSummary] = useState(false);
   const [tableData, setTableData] = useState([]);
+
+  // Load mock company data when modal opens
+  useEffect(() => {
+    if (open) {
+      // Mock data based on the company_detail table
+      setCompanies([
+        { company_id: "1", company_name: "Asha" },
+        { company_id: "2", company_name: "SP" },
+        { company_id: "3", company_name: "Paliwal" },
+        { company_id: "5", company_name: "Demo" },
+        { company_id: "6", company_name: "Dhoran" },
+        { company_id: "7", company_name: "Dalchand Paliwal" },
+      ]);
+    }
+  }, [open]);
 
   // Function to parse response data with markdown code blocks
   const parseResponseData = (data) => {
@@ -54,21 +63,7 @@ function FileUploadModal({ open, handleClose }) {
     }
   };
 
-  // Load mock company data when modal opens
-  useEffect(() => {
-    if (open) {
-      // Mock data based on the company_detail table
-      setCompanies([
-        { company_id: "1", company_name: "Asha" },
-        { company_id: "2", company_name: "SP" },
-        { company_id: "3", company_name: "Paliwal" },
-        { company_id: "5", company_name: "Demo" },
-        { company_id: "6", company_name: "Dhoran" },
-        { company_id: "7", company_name: "Dalchand Paliwal" },
-      ]);
-    }
-  }, [open]);
-
+  // we can implement useCallback for this function to avoid re-creating it on every render
   const handleFileChange = (fileNumber, event) => {
     const file = event.target.files[0];
     setError("");
@@ -137,9 +132,6 @@ function FileUploadModal({ open, handleClose }) {
         // Use the parsing function to get structured data
         const parsedData = parseResponseData(result);
         setTableData(parsedData);
-
-        // Show the table summary after successful API call
-        setShowTableSummary(true);
       } catch (error) {
         setError(error.message);
       }
@@ -148,6 +140,7 @@ function FileUploadModal({ open, handleClose }) {
     } catch (error) {
       console.error("Error submitting files:", error);
 
+      // Simple approach to ensure we always set a string as the error message
       const errorMessage = error.response?.data?.detail
         ? String(error.response.data.detail)
         : "Failed to generate CSV. Please try again.";
@@ -164,7 +157,6 @@ function FileUploadModal({ open, handleClose }) {
     setCompanyId("");
     setSelectedCompany(null);
     setError("");
-    setShowTableSummary(false);
     setTableData([]);
     handleClose();
   };
@@ -185,7 +177,6 @@ function FileUploadModal({ open, handleClose }) {
     setFile2(null);
     setCompanyId("");
     setSelectedCompany(null);
-    setShowTableSummary(false);
     setTableData([]);
 
     handleClose();
@@ -221,39 +212,8 @@ function FileUploadModal({ open, handleClose }) {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    URL.revokeObjectURL(url); // Clean up to avoid memory leaks
   };
-
-  const FileUploadBox = ({ file, fileNumber, label }) => (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        border: "2px dashed #1976d2",
-        borderRadius: 2,
-        p: 2,
-        textAlign: "center",
-        cursor: "pointer",
-        height: "110px",
-        backgroundColor: "rgba(25, 118, 210, 0.02)",
-        "&:hover": {
-          borderColor: "#1976d2",
-          bgcolor: "rgba(25, 118, 210, 0.05)",
-        },
-      }}
-      component="label"
-    >
-      <input
-        type="file"
-        accept=".pdf,.txt"
-        hidden
-        onChange={(e) => handleFileChange(fileNumber, e)}
-      />
-      <CloudUploadIcon color="primary" sx={{ fontSize: 40, mb: 1 }} />
-      <Typography variant="body2">{file ? file.name : label}</Typography>
-    </Box>
-  );
 
   return (
     <Dialog
@@ -306,6 +266,7 @@ function FileUploadModal({ open, handleClose }) {
               file={file1}
               fileNumber={1}
               label="Click here to upload file"
+              handleFileChange={handleFileChange}
             />
           </Box>
           <Box sx={{ width: "48%" }}>
@@ -316,66 +277,17 @@ function FileUploadModal({ open, handleClose }) {
               file={file2}
               fileNumber={2}
               label="Click here to upload file"
+              handleFileChange={handleFileChange}
             />
           </Box>
         </Box>
 
-        {showTableSummary && (
+        {tableData.length > 0 && (
           <Box sx={{ mt: 3 }}>
-            <TableContainer component={Paper} sx={{ boxShadow: 1 }}>
-              <Table sx={{ minWidth: 650 }} aria-label="table summary">
-                <TableHead>
-                  <TableRow sx={{ backgroundColor: "#f5f5f5" }}>
-                    <TableCell sx={{ fontWeight: "bold" }}>
-                      Table Name
-                    </TableCell>
-                    <TableCell sx={{ fontWeight: "bold" }}>
-                      Description
-                    </TableCell>
-                    <TableCell sx={{ fontWeight: "bold", width: "100px" }}>
-                      Actions
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {tableData.map((item, index) => (
-                    <TableRow
-                      key={index}
-                      sx={{
-                        "&:last-child td, &:last-child th": { border: 0 },
-                        "&:nth-of-type(odd)": {
-                          backgroundColor: "rgba(0, 0, 0, 0.02)",
-                        },
-                      }}
-                    >
-                      <TableCell component="th" scope="row">
-                        {item.table_name}
-                      </TableCell>
-                      <TableCell>{item.description}</TableCell>
-                      <TableCell>
-                        <Button
-                          size="small"
-                          startIcon={<DownloadIcon />}
-                          onClick={() =>
-                            generateAndDownloadCSV(
-                              item.sample_data,
-                              item.table_name
-                            )
-                          }
-                          sx={{ minWidth: "auto" }}
-                          disabled={
-                            !item.sample_data || item.sample_data.length === 0
-                          }
-                          title="Preview CSV"
-                        >
-                          CSV
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+            <ResultTable
+              tableData={tableData}
+              generateAndDownloadCSV={generateAndDownloadCSV}
+            />
 
             <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
               <Button
@@ -390,11 +302,13 @@ function FileUploadModal({ open, handleClose }) {
           </Box>
         )}
       </DialogContent>
+
+      {/* Dialog actions */}
       <DialogActions sx={{ px: 3, py: 2 }}>
         <Button onClick={handleCancel} color="primary">
           Cancel
         </Button>
-        {!showTableSummary && (
+        {tableData.length === 0 && (
           <Button
             onClick={handleGenerateCSV}
             color="primary"

@@ -33,6 +33,7 @@ import RecipeDashboard from "./components/AccountingRecipe/RecipeDashboard";
 import ChecklistIcon from "@mui/icons-material/Checklist";
 import EditNoteIcon from "@mui/icons-material/EditNote";
 import TaskManager from "./components/TaskManager/TaskManager2";
+import DataSourceMapping from "./components/DataSourceMapping/DataSourceMapping";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -504,6 +505,38 @@ export default function SideBar({ onLogout }) {
               />
             </ListItemButton>
           </ListItem>
+          <ListItem
+            disablePadding
+            sx={{ display: "block" }}
+            onClick={() => setMenuData("DataSourceMapping")}
+          >
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: open ? "initial" : "center",
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: open ? 3 : "auto",
+                  justifyContent: "center",
+                }}
+              >
+                <img
+                  src={AccountingRecipeIcon}
+                  alt="DataSourceMapping"
+                  style={{ width: 24, height: 24 }}
+                />
+                {/* <EditNoteIcon /> */}
+              </ListItemIcon>
+              <ListItemText
+                primary="DataSourceMapping"
+                sx={{ opacity: open ? 1 : 0 }}
+              />
+            </ListItemButton>
+          </ListItem>
         </List>
       </Drawer>
       <Box
@@ -524,6 +557,7 @@ export default function SideBar({ onLogout }) {
         {/* {menuData == "AccountingRecipe" && <AccountingRecipe />} */}
         {/* {menuData == "SessionHistory" && <SessionHistory />} */}
         {menuData == "RecipeDashboard" && <RecipeDashboard />}
+        {menuData == "DataSourceMapping" && <DataSourceMapping />}
       </Box>
     </Box>
   );

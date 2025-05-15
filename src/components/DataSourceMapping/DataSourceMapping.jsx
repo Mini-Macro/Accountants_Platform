@@ -17,6 +17,17 @@ import {
   IconButton,
 } from "@mui/material";
 import { parseResponseData } from "../../utils/responseCleaner";
+import {
+  Document,
+  Packer,
+  Paragraph,
+  Table as DocxTable,
+  TableRow as DocxTableRow,
+  TableCell as DocxTableCell,
+  HeadingLevel,
+  BorderStyle,
+} from "docx";
+import { saveAs } from "file-saver";
 import axios from "axios";
 
 // FileUploadBox component for file upload
@@ -253,6 +264,7 @@ function DataSourceMapping() {
   const [error, setError] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [jsonResponse, setJsonResponse] = useState(null);
+  const [isExporting, setIsExporting] = useState(false);
 
   // Load mock company data
   useEffect(() => {
@@ -395,9 +407,236 @@ function DataSourceMapping() {
     }
   };
 
+  const exportToWord = () => {
+    try {
+      setIsExporting(true);
+
+      if (!jsonResponse || jsonResponse.length === 0) {
+        setError("No data available to export");
+        return;
+      }
+
+      // Create table rows for the header
+      const tableRows = [
+        new DocxTableRow({
+          tableHeader: true,
+          children: [
+            new DocxTableCell({
+              shading: { fill: "#f5f5f5" },
+              borders: {
+                top: { style: BorderStyle.SINGLE, size: 1, color: "#e0e0e0" },
+                bottom: {
+                  style: BorderStyle.SINGLE,
+                  size: 1,
+                  color: "#e0e0e0",
+                },
+                left: { style: BorderStyle.SINGLE, size: 1, color: "#e0e0e0" },
+                right: { style: BorderStyle.SINGLE, size: 1, color: "#e0e0e0" },
+              },
+              children: [new Paragraph("Reporting Requirement")],
+            }),
+            new DocxTableCell({
+              shading: { fill: "#f5f5f5" },
+              borders: {
+                top: { style: BorderStyle.SINGLE, size: 1, color: "#e0e0e0" },
+                bottom: {
+                  style: BorderStyle.SINGLE,
+                  size: 1,
+                  color: "#e0e0e0",
+                },
+                left: { style: BorderStyle.SINGLE, size: 1, color: "#e0e0e0" },
+                right: { style: BorderStyle.SINGLE, size: 1, color: "#e0e0e0" },
+              },
+              children: [new Paragraph("Visual")],
+            }),
+            new DocxTableCell({
+              shading: { fill: "#f5f5f5" },
+              borders: {
+                top: { style: BorderStyle.SINGLE, size: 1, color: "#e0e0e0" },
+                bottom: {
+                  style: BorderStyle.SINGLE,
+                  size: 1,
+                  color: "#e0e0e0",
+                },
+                left: { style: BorderStyle.SINGLE, size: 1, color: "#e0e0e0" },
+                right: { style: BorderStyle.SINGLE, size: 1, color: "#e0e0e0" },
+              },
+              children: [new Paragraph("Table Names")],
+            }),
+            new DocxTableCell({
+              shading: { fill: "#f5f5f5" },
+              borders: {
+                top: { style: BorderStyle.SINGLE, size: 1, color: "#e0e0e0" },
+                bottom: {
+                  style: BorderStyle.SINGLE,
+                  size: 1,
+                  color: "#e0e0e0",
+                },
+                left: { style: BorderStyle.SINGLE, size: 1, color: "#e0e0e0" },
+                right: { style: BorderStyle.SINGLE, size: 1, color: "#e0e0e0" },
+              },
+              children: [new Paragraph("Column Names")],
+            }),
+          ],
+        }),
+      ];
+
+      // Add data rows
+      jsonResponse.forEach((item) => {
+        tableRows.push(
+          new DocxTableRow({
+            children: [
+              new DocxTableCell({
+                borders: {
+                  top: { style: BorderStyle.SINGLE, size: 1, color: "#e0e0e0" },
+                  bottom: {
+                    style: BorderStyle.SINGLE,
+                    size: 1,
+                    color: "#e0e0e0",
+                  },
+                  left: {
+                    style: BorderStyle.SINGLE,
+                    size: 1,
+                    color: "#e0e0e0",
+                  },
+                  right: {
+                    style: BorderStyle.SINGLE,
+                    size: 1,
+                    color: "#e0e0e0",
+                  },
+                },
+                children: [new Paragraph(item["Reporting Requirement"] || "")],
+              }),
+              new DocxTableCell({
+                borders: {
+                  top: { style: BorderStyle.SINGLE, size: 1, color: "#e0e0e0" },
+                  bottom: {
+                    style: BorderStyle.SINGLE,
+                    size: 1,
+                    color: "#e0e0e0",
+                  },
+                  left: {
+                    style: BorderStyle.SINGLE,
+                    size: 1,
+                    color: "#e0e0e0",
+                  },
+                  right: {
+                    style: BorderStyle.SINGLE,
+                    size: 1,
+                    color: "#e0e0e0",
+                  },
+                },
+                children: [new Paragraph(item["Visual"] || "")],
+              }),
+              new DocxTableCell({
+                borders: {
+                  top: { style: BorderStyle.SINGLE, size: 1, color: "#e0e0e0" },
+                  bottom: {
+                    style: BorderStyle.SINGLE,
+                    size: 1,
+                    color: "#e0e0e0",
+                  },
+                  left: {
+                    style: BorderStyle.SINGLE,
+                    size: 1,
+                    color: "#e0e0e0",
+                  },
+                  right: {
+                    style: BorderStyle.SINGLE,
+                    size: 1,
+                    color: "#e0e0e0",
+                  },
+                },
+                children: [new Paragraph(item["Table Names"] || "")],
+              }),
+              new DocxTableCell({
+                borders: {
+                  top: { style: BorderStyle.SINGLE, size: 1, color: "#e0e0e0" },
+                  bottom: {
+                    style: BorderStyle.SINGLE,
+                    size: 1,
+                    color: "#e0e0e0",
+                  },
+                  left: {
+                    style: BorderStyle.SINGLE,
+                    size: 1,
+                    color: "#e0e0e0",
+                  },
+                  right: {
+                    style: BorderStyle.SINGLE,
+                    size: 1,
+                    color: "#e0e0e0",
+                  },
+                },
+                children: [new Paragraph(item["Column Names"] || "")],
+              }),
+            ],
+          })
+        );
+      });
+
+      // Create the document with the table
+      const doc = new Document({
+        sections: [
+          {
+            properties: {
+              page: {
+                margin: {
+                  top: 1440,
+                  right: 1440,
+                  bottom: 1440,
+                  left: 1440,
+                },
+              },
+            },
+            children: [
+              new Paragraph({
+                text: "Reporting Requirements",
+                heading: HeadingLevel.HEADING_1,
+              }),
+              new Paragraph({
+                text: `Company: ${
+                  selectedCompany ? selectedCompany.company_name : "N/A"
+                }`,
+                spacing: {
+                  after: 200,
+                },
+              }),
+              new DocxTable({
+                width: {
+                  size: 100,
+                  type: "pct",
+                },
+                rows: tableRows,
+              }),
+            ],
+          },
+        ],
+      });
+
+      // Generate and save the document
+      Packer.toBlob(doc)
+        .then((blob) => {
+          saveAs(
+            blob,
+            `Reporting_Requirements_${
+              selectedCompany?.company_name || "Export"
+            }.docx`
+          );
+        })
+        .catch((error) => {
+          console.error("Error generating Word document:", error);
+          setError("Failed to export to Word document. Please try again.");
+        });
+    } catch (error) {
+      console.error("Error exporting to Word:", error);
+      setError("Failed to export to Word document. Please try again.");
+    } finally {
+      setIsExporting(false);
+    }
+  };
   // Determine if we should show the table UI layout
   const showTable = jsonResponse !== null;
-  // const showTable = true;
 
   return (
     <Box
@@ -464,29 +703,40 @@ function DataSourceMapping() {
               />
             </Box>
 
-            <Box sx={{ mb: 3 }}>
-              <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 500 }}>
-                Reporting Requirement File:
-              </Typography>
-              <FileUploadBox
-                files={file1}
-                fileNumber={1}
-                label="Click here to upload file"
-                handleFileChange={handleFileChange}
-              />
-            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                gap: 3,
+                mb: 4,
+                flexDirection: { xs: "column", md: "row" }, // Stack on mobile, horizontal on larger screens
+              }}
+            >
+              {/* First file upload box */}
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 500 }}>
+                  Reporting Requirement File:
+                </Typography>
+                <FileUploadBox
+                  files={file1}
+                  fileNumber={1}
+                  label="Click here to upload file"
+                  handleFileChange={handleFileChange}
+                />
+              </Box>
 
-            <Box sx={{ mb: 4 }}>
-              <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 500 }}>
-                Non-Financial Data Files:
-              </Typography>
-              <FileUploadBox
-                files={file2}
-                fileNumber={2}
-                label="Click here to upload file"
-                handleFileChange={handleFileChange}
-                multiple={true}
-              />
+              {/* Second file upload box */}
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 500 }}>
+                  Non-Financial Data Files:
+                </Typography>
+                <FileUploadBox
+                  files={file2}
+                  fileNumber={2}
+                  label="Click here to upload file"
+                  handleFileChange={handleFileChange}
+                  multiple={true}
+                />
+              </Box>
             </Box>
 
             <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
@@ -518,9 +768,46 @@ function DataSourceMapping() {
           {/* Right section - Results table */}
           {showTable && (
             <Box sx={{ width: "50%" }}>
-              <Typography variant="h6" gutterBottom sx={{ fontWeight: 500 }}>
-                Results
-              </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  mb: 2,
+                }}
+              >
+                <Typography variant="h6" sx={{ fontWeight: 500 }}>
+                  Results
+                </Typography>
+                {jsonResponse && jsonResponse.length > 0 && (
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    onClick={exportToWord}
+                    disabled={isExporting}
+                    startIcon={
+                      isExporting ? (
+                        <CircularProgress size={20} />
+                      ) : (
+                        <svg
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"
+                            fill="currentColor"
+                          />
+                        </svg>
+                      )
+                    }
+                  >
+                    {isExporting ? "Exporting..." : "Export to Word"}
+                  </Button>
+                )}
+              </Box>
               <TableContainer
                 component={Paper}
                 sx={{ borderRadius: 2, border: "1px solid #e0e0e0" }}

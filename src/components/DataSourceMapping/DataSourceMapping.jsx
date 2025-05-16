@@ -3,6 +3,7 @@ import {
   Button,
   Box,
   Typography,
+  Chip,
   Alert,
   CircularProgress,
   TextField,
@@ -698,7 +699,7 @@ function DataSourceMapping() {
             className="left-section"
           >
             <Typography variant="h5" sx={{ mb: 3, fontWeight: 500 }}>
-              Generate Workbook
+              Data Source Mapping
             </Typography>
 
             {error && (
@@ -743,7 +744,18 @@ function DataSourceMapping() {
               {/* First file upload box */}
               <Box sx={{ flex: 1 }}>
                 <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 500 }}>
-                  Reporting Requirement File:
+                  Reporting Requirement File
+                  <Chip
+                    label="TXT Only"
+                    size="small"
+                    color="primary"
+                    sx={{
+                      ml: 1,
+                      fontWeight: 500,
+                      background: (theme) =>
+                        `linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${theme.palette.primary.light} 90%)`,
+                    }}
+                  />
                 </Typography>
                 <FileUploadBox
                   files={file1}
@@ -756,7 +768,18 @@ function DataSourceMapping() {
               {/* Second file upload box */}
               <Box sx={{ flex: 1 }}>
                 <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 500 }}>
-                  Non-Financial Data Files:
+                  Non-Financial Data Files{" "}
+                  <Chip
+                    label="CSV Only"
+                    size="small"
+                    color="primary"
+                    sx={{
+                      ml: 1,
+                      fontWeight: 500,
+                      background: (theme) =>
+                        `linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${theme.palette.primary.light} 90%)`,
+                    }}
+                  />
                 </Typography>
                 <FileUploadBox
                   files={file2}

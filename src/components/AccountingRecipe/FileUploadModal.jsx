@@ -7,6 +7,7 @@ import {
   DialogTitle,
   Box,
   Typography,
+  Chip,
   Alert,
   CircularProgress,
   TextField,
@@ -260,7 +261,18 @@ function FileUploadModal({ open, handleClose }) {
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Box sx={{ width: "48%" }}>
             <Typography variant="subtitle2" gutterBottom>
-              Reporting Requirement File:
+              Reporting Requirement File{" "}
+              <Chip
+                label="PDF Only"
+                size="small"
+                color="primary"
+                sx={{
+                  ml: 1,
+                  fontWeight: 500,
+                  background: (theme) =>
+                    `linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${theme.palette.primary.light} 90%)`,
+                }}
+              />
             </Typography>
             <FileUploadBox
               file={file1}
@@ -271,7 +283,18 @@ function FileUploadModal({ open, handleClose }) {
           </Box>
           <Box sx={{ width: "48%" }}>
             <Typography variant="subtitle2" gutterBottom>
-              Accounting Instruction File:
+              Accounting Instruction File{" "}
+              <Chip
+                label="PDF Only"
+                size="small"
+                color="primary"
+                sx={{
+                  ml: 1,
+                  fontWeight: 500,
+                  background: (theme) =>
+                    `linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${theme.palette.primary.light} 90%)`,
+                }}
+              />
             </Typography>
             <FileUploadBox
               file={file2}

@@ -672,6 +672,7 @@ function DataSourceMapping() {
         sx={{
           width: showTable ? "100%" : "650px", // Fixed width that matches your reference image
           transition: "width 0.3s ease",
+          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
         }}
       >
         <Paper
@@ -754,6 +755,7 @@ function DataSourceMapping() {
                       fontWeight: 500,
                       background: (theme) =>
                         `linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${theme.palette.primary.light} 90%)`,
+                      boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
                     }}
                   />
                 </Typography>
@@ -778,6 +780,7 @@ function DataSourceMapping() {
                       fontWeight: 500,
                       background: (theme) =>
                         `linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${theme.palette.primary.light} 90%)`,
+                      boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
                     }}
                   />
                 </Typography>

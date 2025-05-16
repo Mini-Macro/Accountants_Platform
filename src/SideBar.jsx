@@ -49,6 +49,7 @@ import AccountingRecipeIcon from "./assets/AccountingRecipeIcon.png";
 import GstIcon from "./assets/GstIcon.png";
 import AsIcon from "./assets/AsIcon.png";
 import PredictionIcon from "./assets/PredictionIcon.png";
+import GoogleDocIcon from "./assets/GoogleDocIcon.png";
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
@@ -525,7 +526,7 @@ export default function SideBar({ onLogout }) {
                 }}
               >
                 <img
-                  src={AccountingRecipeIcon}
+                  src={GoogleDocIcon}
                   alt="DataSourceMapping"
                   style={{ width: 24, height: 24 }}
                 />

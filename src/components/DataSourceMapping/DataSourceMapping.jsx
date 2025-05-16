@@ -119,7 +119,25 @@ const FileUploadBox = ({
 
       {/* Display files below the upload box */}
       {hasFiles && (
-        <Box sx={{ mt: 2, mb: 2 }}>
+        <Box
+          sx={{
+            mt: 2,
+            mb: 2,
+            maxHeight: "140px",
+            overflow: "auto", // Enable scrolling when content exceeds height
+            "&::-webkit-scrollbar": {
+              width: "6px",
+              height: "6px",
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "#bbbbbb",
+              borderRadius: "3px",
+            },
+            "&::-webkit-scrollbar-track": {
+              backgroundColor: "#f5f5f5",
+            },
+          }}
+        >
           {multiple ? (
             // Multiple files display - show all files
             files.map((file, index) => (
@@ -664,10 +682,21 @@ function DataSourceMapping() {
             flexDirection: showTable ? "row" : "column",
             gap: 3,
             boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.1)",
+            height: showTable ? "calc(100vh - 120px)" : "auto",
+            overflow: "hidden",
           }}
         >
           {/* Left section - Upload form */}
-          <Box sx={{ width: showTable ? "45%" : "100%" }}>
+          <Box
+            sx={{
+              width: showTable ? "45%" : "100%",
+              display: "flex",
+              flexDirection: "column",
+              height: showTable ? "100%" : "auto",
+              overflow: "hidden",
+            }}
+            className="left-section"
+          >
             <Typography variant="h5" sx={{ mb: 3, fontWeight: 500 }}>
               Generate Workbook
             </Typography>
@@ -767,7 +796,15 @@ function DataSourceMapping() {
 
           {/* Right section - Results table */}
           {showTable && (
-            <Box sx={{ width: "50%" }}>
+            <Box
+              sx={{
+                width: "50%",
+                display: "flex",
+                flexDirection: "column",
+                height: "100%",
+              }}
+              className="right-section"
+            >
               <Box
                 sx={{
                   display: "flex",
@@ -810,9 +847,25 @@ function DataSourceMapping() {
               </Box>
               <TableContainer
                 component={Paper}
-                sx={{ borderRadius: 2, border: "1px solid #e0e0e0" }}
+                sx={{
+                  borderRadius: 2,
+                  border: "1px solid #e0e0e0",
+                  flex: 1,
+                  overflow: "auto", // Enable scrolling
+                  "&::-webkit-scrollbar": {
+                    width: "8px",
+                    height: "8px",
+                  },
+                  "&::-webkit-scrollbar-thumb": {
+                    backgroundColor: "#bbbbbb",
+                    borderRadius: "4px",
+                  },
+                  "&::-webkit-scrollbar-track": {
+                    backgroundColor: "#f5f5f5",
+                  },
+                }}
               >
-                <Table>
+                <Table stickyHeader>
                   <TableHead>
                     <TableRow sx={{ bgcolor: "#f5f5f5" }}>
                       <TableCell>Reporting Requirement</TableCell>

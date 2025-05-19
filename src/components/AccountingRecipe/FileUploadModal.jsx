@@ -104,6 +104,9 @@ function FileUploadModal({ open, handleClose }) {
       return;
     }
 
+    if (tableData.length > 0) {
+      setTableData([]);
+    }
     setIsProcessing(true);
     setError("");
 
@@ -314,15 +317,26 @@ function FileUploadModal({ open, handleClose }) {
               generateAndDownloadCSV={generateAndDownloadCSV}
             />
 
+            {/* Add this code block - Error message when ErrorTable exists */}
+            {tableData.some((table) => table.table_name === "ErrorTable") && (
+              <Alert severity="warning" sx={{ mt: 2 }}>
+                Error occurred during generation. Please click the RE-GENERATE
+                button to try again.
+              </Alert>
+            )}
+
             <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-              <Button
-                onClick={handleApprove}
-                color="primary"
-                variant="contained"
-                sx={{ ml: 1 }}
-              >
-                APPROVE
-              </Button>
+              {!tableData.some(
+                (table) => table.table_name === "ErrorTable"
+              ) && (
+                <Button
+                  onClick={handleApprove}
+                  color="primary"
+                  variant="contained"
+                >
+                  APPROVE
+                </Button>
+              )}
             </Box>
           </Box>
         )}
@@ -333,17 +347,20 @@ function FileUploadModal({ open, handleClose }) {
         <Button onClick={handleCancel} color="primary">
           Cancel
         </Button>
-        {tableData.length === 0 && (
-          <Button
-            onClick={handleGenerateCSV}
-            color="primary"
-            variant="contained"
-            disabled={!file1 || !file2 || !companyId || isProcessing}
-            startIcon={isProcessing ? <CircularProgress size={20} /> : null}
-          >
-            {isProcessing ? "Processing..." : "Generate CSV"}
-          </Button>
-        )}
+        <Button
+          onClick={handleGenerateCSV}
+          color="primary"
+          variant="contained"
+          disabled={!file1 || !file2 || !companyId || isProcessing}
+          startIcon={isProcessing ? <CircularProgress size={20} /> : null}
+          sx={{ minWidth: "120px" }}
+        >
+          {isProcessing
+            ? "Processing..."
+            : tableData.length > 0
+            ? "Re-Generate"
+            : "Generate CSV"}
+        </Button>
       </DialogActions>
     </Dialog>
   );

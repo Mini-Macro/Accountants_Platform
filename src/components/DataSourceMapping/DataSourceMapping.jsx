@@ -403,7 +403,7 @@ function DataSourceMapping() {
       console.log("Total files:", 1 + file2.length);
 
       const response = await axios.post(
-        "http://127.0.0.1:8000/generate-reporting-suggestions/",
+        "https://main-server-restless-dawn-7780.fly.dev/accounting_recipe/get-data-source-mapping/",
         formData,
         {
           headers: {

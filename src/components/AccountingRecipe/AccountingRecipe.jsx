@@ -120,12 +120,15 @@ const AccountingRecipe = () => {
     const user_id = session.user.id;
 
     try {
-      await axios.post("http://127.0.0.1:8000/session_history/", {
-        file_name: selectedFile.name,
-        industry: selectedIndustry,
-        response: JSON.stringify(response),
-        user_id: user_id,
-      });
+      await axios.post(
+        "https://main-server-restless-dawn-7780.fly.dev/accounting_recipe/session_history/",
+        {
+          file_name: selectedFile.name,
+          industry: selectedIndustry,
+          response: JSON.stringify(response),
+          user_id: user_id,
+        }
+      );
       setSuccessMessage("Recipe saved successfully");
     } catch (error) {
       setError("Failed to save the recipe: " + error.message);
@@ -351,10 +354,13 @@ const AccountingRecipe = () => {
 
       formData.append("industry", selectedIndustry);
 
-      const response = await fetch("http://127.0.0.1:8000/upload-files/", {
-        method: "POST",
-        body: formData,
-      });
+      const response = await fetch(
+        "https://main-server-restless-dawn-7780.fly.dev/accounting_recipe/get-accounting-instruction/",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();

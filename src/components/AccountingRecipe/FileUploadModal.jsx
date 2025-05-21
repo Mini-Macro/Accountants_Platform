@@ -120,7 +120,7 @@ function FileUploadModal({ open, handleClose }) {
       formData.append("client_id", companyId);
 
       const response = await axios.post(
-        "http://127.0.0.1:8000/get_non_financial_data",
+        "https://main-server-restless-dawn-7780.fly.dev/accounting_recipe/get_non_financial_data",
         formData,
         {
           headers: {

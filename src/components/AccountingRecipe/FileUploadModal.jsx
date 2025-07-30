@@ -7,6 +7,7 @@ import {
   DialogTitle,
   Box,
   Typography,
+  Chip,
   Alert,
   CircularProgress,
   TextField,
@@ -103,6 +104,9 @@ function FileUploadModal({ open, handleClose }) {
       return;
     }
 
+    if (tableData.length > 0) {
+      setTableData([]);
+    }
     setIsProcessing(true);
     setError("");
 
@@ -116,7 +120,7 @@ function FileUploadModal({ open, handleClose }) {
       formData.append("client_id", companyId);
 
       const response = await axios.post(
-        "http://127.0.0.1:8000/get_non_financial_data",
+        "https://main-server-restless-dawn-7780.fly.dev/accounting_recipe/get_non_financial_data",
         formData,
         {
           headers: {
@@ -260,7 +264,19 @@ function FileUploadModal({ open, handleClose }) {
         <Box sx={{ display: "flex", justifyContent: "space-between" }}>
           <Box sx={{ width: "48%" }}>
             <Typography variant="subtitle2" gutterBottom>
-              Reporting Requirement File:
+              Reporting Requirement File{" "}
+              <Chip
+                label="PDF Only"
+                size="small"
+                color="primary"
+                sx={{
+                  ml: 1,
+                  fontWeight: 500,
+                  background: (theme) =>
+                    `linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${theme.palette.primary.light} 90%)`,
+                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+                }}
+              />
             </Typography>
             <FileUploadBox
               file={file1}
@@ -271,7 +287,19 @@ function FileUploadModal({ open, handleClose }) {
           </Box>
           <Box sx={{ width: "48%" }}>
             <Typography variant="subtitle2" gutterBottom>
-              Accounting Instruction File:
+              Accounting Instruction File{" "}
+              <Chip
+                label="PDF Only"
+                size="small"
+                color="primary"
+                sx={{
+                  ml: 1,
+                  fontWeight: 500,
+                  background: (theme) =>
+                    `linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${theme.palette.primary.light} 90%)`,
+                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+                }}
+              />
             </Typography>
             <FileUploadBox
               file={file2}
@@ -289,15 +317,26 @@ function FileUploadModal({ open, handleClose }) {
               generateAndDownloadCSV={generateAndDownloadCSV}
             />
 
+            {/* Add this code block - Error message when ErrorTable exists */}
+            {tableData.some((table) => table.table_name === "ErrorTable") && (
+              <Alert severity="warning" sx={{ mt: 2 }}>
+                Error occurred during generation. Please click the RE-GENERATE
+                button to try again.
+              </Alert>
+            )}
+
             <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-              <Button
-                onClick={handleApprove}
-                color="primary"
-                variant="contained"
-                sx={{ ml: 1 }}
-              >
-                APPROVE
-              </Button>
+              {!tableData.some(
+                (table) => table.table_name === "ErrorTable"
+              ) && (
+                <Button
+                  onClick={handleApprove}
+                  color="primary"
+                  variant="contained"
+                >
+                  APPROVE
+                </Button>
+              )}
             </Box>
           </Box>
         )}
@@ -308,17 +347,20 @@ function FileUploadModal({ open, handleClose }) {
         <Button onClick={handleCancel} color="primary">
           Cancel
         </Button>
-        {tableData.length === 0 && (
-          <Button
-            onClick={handleGenerateCSV}
-            color="primary"
-            variant="contained"
-            disabled={!file1 || !file2 || !companyId || isProcessing}
-            startIcon={isProcessing ? <CircularProgress size={20} /> : null}
-          >
-            {isProcessing ? "Processing..." : "Generate CSV"}
-          </Button>
-        )}
+        <Button
+          onClick={handleGenerateCSV}
+          color="primary"
+          variant="contained"
+          disabled={!file1 || !file2 || !companyId || isProcessing}
+          startIcon={isProcessing ? <CircularProgress size={20} /> : null}
+          sx={{ minWidth: "120px" }}
+        >
+          {isProcessing
+            ? "Processing..."
+            : tableData.length > 0
+            ? "Re-Generate"
+            : "Generate CSV"}
+        </Button>
       </DialogActions>
     </Dialog>
   );

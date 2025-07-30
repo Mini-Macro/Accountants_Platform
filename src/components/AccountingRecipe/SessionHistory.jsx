@@ -49,7 +49,7 @@ const SessionHistory = () => {
       //   });
 
       const response = await axios.post(
-        `http://127.0.0.1:8000/get_session_history/`,
+        `https://main-server-restless-dawn-7780.fly.dev/accounting_recipe/get_session_history/`,
         {
           user_id: user_id,
         }

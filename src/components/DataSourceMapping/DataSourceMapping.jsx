@@ -3,6 +3,7 @@ import {
   Button,
   Box,
   Typography,
+  Chip,
   Alert,
   CircularProgress,
   TextField,
@@ -119,7 +120,25 @@ const FileUploadBox = ({
 
       {/* Display files below the upload box */}
       {hasFiles && (
-        <Box sx={{ mt: 2, mb: 2 }}>
+        <Box
+          sx={{
+            mt: 2,
+            mb: 2,
+            maxHeight: "140px",
+            overflow: "auto", // Enable scrolling when content exceeds height
+            "&::-webkit-scrollbar": {
+              width: "6px",
+              height: "6px",
+            },
+            "&::-webkit-scrollbar-thumb": {
+              backgroundColor: "#bbbbbb",
+              borderRadius: "3px",
+            },
+            "&::-webkit-scrollbar-track": {
+              backgroundColor: "#f5f5f5",
+            },
+          }}
+        >
           {multiple ? (
             // Multiple files display - show all files
             files.map((file, index) => (
@@ -351,6 +370,11 @@ function DataSourceMapping() {
       return;
     }
 
+    // Clear existing results when re-generating
+    if (jsonResponse) {
+      setJsonResponse(null);
+    }
+
     setIsProcessing(true);
     setError("");
 
@@ -379,7 +403,7 @@ function DataSourceMapping() {
       console.log("Total files:", 1 + file2.length);
 
       const response = await axios.post(
-        "http://127.0.0.1:8000/generate-reporting-suggestions/",
+        "https://main-server-restless-dawn-7780.fly.dev/accounting_recipe/get-data-source-mapping/",
         formData,
         {
           headers: {
@@ -653,6 +677,7 @@ function DataSourceMapping() {
         sx={{
           width: showTable ? "100%" : "650px", // Fixed width that matches your reference image
           transition: "width 0.3s ease",
+          boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
         }}
       >
         <Paper
@@ -664,12 +689,23 @@ function DataSourceMapping() {
             flexDirection: showTable ? "row" : "column",
             gap: 3,
             boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.1)",
+            height: showTable ? "calc(100vh - 120px)" : "auto",
+            overflow: "hidden",
           }}
         >
           {/* Left section - Upload form */}
-          <Box sx={{ width: showTable ? "45%" : "100%" }}>
+          <Box
+            sx={{
+              width: showTable ? "45%" : "100%",
+              display: "flex",
+              flexDirection: "column",
+              height: showTable ? "100%" : "auto",
+              overflow: "hidden",
+            }}
+            className="left-section"
+          >
             <Typography variant="h5" sx={{ mb: 3, fontWeight: 500 }}>
-              Generate Workbook
+              Data Source Mapping
             </Typography>
 
             {error && (
@@ -714,7 +750,19 @@ function DataSourceMapping() {
               {/* First file upload box */}
               <Box sx={{ flex: 1 }}>
                 <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 500 }}>
-                  Reporting Requirement File:
+                  Reporting Requirement File
+                  <Chip
+                    label="TXT Only"
+                    size="small"
+                    color="primary"
+                    sx={{
+                      ml: 1,
+                      fontWeight: 500,
+                      background: (theme) =>
+                        `linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${theme.palette.primary.light} 90%)`,
+                      boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+                    }}
+                  />
                 </Typography>
                 <FileUploadBox
                   files={file1}
@@ -727,7 +775,19 @@ function DataSourceMapping() {
               {/* Second file upload box */}
               <Box sx={{ flex: 1 }}>
                 <Typography variant="subtitle1" sx={{ mb: 1, fontWeight: 500 }}>
-                  Non-Financial Data Files:
+                  Non-Financial Data Files{" "}
+                  <Chip
+                    label="CSV Only"
+                    size="small"
+                    color="primary"
+                    sx={{
+                      ml: 1,
+                      fontWeight: 500,
+                      background: (theme) =>
+                        `linear-gradient(45deg, ${theme.palette.primary.main} 30%, ${theme.palette.primary.light} 90%)`,
+                      boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+                    }}
+                  />
                 </Typography>
                 <FileUploadBox
                   files={file2}
@@ -760,14 +820,26 @@ function DataSourceMapping() {
                     "0px 3px 1px -2px rgba(0,0,0,0.2), 0px 2px 2px 0px rgba(0,0,0,0.14), 0px 1px 5px 0px rgba(0,0,0,0.12)",
                 }}
               >
-                {isProcessing ? "Processing..." : "SUBMIT"}
+                {isProcessing
+                  ? "Processing..."
+                  : jsonResponse
+                  ? "RE-GENERATE"
+                  : "SUBMIT"}
               </Button>
             </Box>
           </Box>
 
           {/* Right section - Results table */}
           {showTable && (
-            <Box sx={{ width: "50%" }}>
+            <Box
+              sx={{
+                width: "50%",
+                display: "flex",
+                flexDirection: "column",
+                height: "100%",
+              }}
+              className="right-section"
+            >
               <Box
                 sx={{
                   display: "flex",
@@ -810,9 +882,25 @@ function DataSourceMapping() {
               </Box>
               <TableContainer
                 component={Paper}
-                sx={{ borderRadius: 2, border: "1px solid #e0e0e0" }}
+                sx={{
+                  borderRadius: 2,
+                  border: "1px solid #e0e0e0",
+                  flex: 1,
+                  overflow: "auto", // Enable scrolling
+                  "&::-webkit-scrollbar": {
+                    width: "8px",
+                    height: "8px",
+                  },
+                  "&::-webkit-scrollbar-thumb": {
+                    backgroundColor: "#bbbbbb",
+                    borderRadius: "4px",
+                  },
+                  "&::-webkit-scrollbar-track": {
+                    backgroundColor: "#f5f5f5",
+                  },
+                }}
               >
-                <Table>
+                <Table stickyHeader>
                   <TableHead>
                     <TableRow sx={{ bgcolor: "#f5f5f5" }}>
                       <TableCell>Reporting Requirement</TableCell>

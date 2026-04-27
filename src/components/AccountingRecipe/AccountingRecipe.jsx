@@ -33,6 +33,7 @@ const AccountingRecipe = () => {
         setResponse(parsedData);
       } catch (error) {
         console.error("Error parsing saved data:", error);
+        sessionStorage.removeItem(STORAGE_KEY); // ← add this line
       }
     }
 
@@ -185,7 +186,7 @@ const AccountingRecipe = () => {
           children: [
             new Paragraph({
               text: `${
-                response.business_overview.industry_type || "Business"
+                response.business_overview?.industry_type || "Business"
               } Accounting Recipe`,
               heading: HeadingLevel.HEADING_1,
             }),
@@ -199,7 +200,8 @@ const AccountingRecipe = () => {
             // Convert business overview to bullet points
             new Paragraph({
               text: `Industry Type: ${
-                response.business_overview.industry_type || "N/A"
+                response.business_overview?.industry_type ||
+                "Industry type not specified"
               }`,
               numbering: {
                 reference: "bullet-points",
@@ -207,14 +209,18 @@ const AccountingRecipe = () => {
               },
             }),
             new Paragraph({
-              text: `Name: ${response.business_overview.name || "N/A"}`,
+              text: `Name: ${
+                response.business_overview?.name || "Business name not specified"
+              }`,
               numbering: {
                 reference: "bullet-points",
                 level: 0,
               },
             }),
             new Paragraph({
-              text: `Type: ${response.business_overview.type || "N/A"}`,
+              text: `Type: ${
+                response.business_overview?.type || "Business type not specified"
+              }`,
               numbering: {
                 reference: "bullet-points",
                 level: 0,
@@ -222,8 +228,9 @@ const AccountingRecipe = () => {
             }),
             new Paragraph({
               text: `Sales Regions: ${
-                response.business_overview.sales_bifurcation?.join(", ") ||
-                "N/A"
+                response.business_overview?.sales_bifurcation?.length > 0
+                  ? response.business_overview.sales_bifurcation.join(", ")
+                  : "No region-wise bifurcation specified"
               }`,
               numbering: {
                 reference: "bullet-points",
@@ -278,7 +285,7 @@ const AccountingRecipe = () => {
         saveAs(
           blob,
           `${
-            response.business_overview.industry_type || "Business"
+            response.business_overview?.industry_type || "Business"
           }_Accounting_Recipe.docx`
         );
         setSuccessMessage("Document exported successfully");
@@ -368,7 +375,9 @@ const AccountingRecipe = () => {
       }
 
       const data = await response.json();
-      const parsedData = JSON.parse(data.response);
+      const parsedData = typeof data.response === "string" 
+        ? JSON.parse(data.response) 
+        : data;
 
       // Save the parsed data to sessionStorage
       sessionStorage.setItem(STORAGE_KEY, JSON.stringify(parsedData));
@@ -506,21 +515,33 @@ const AccountingRecipe = () => {
               <div className="key-value-pair">
                 <span className="key">Industry Type:</span>
                 <span className="value">
-                  {response.business_overview.industry_type}
+                  {response.business_overview?.industry_type
+                    ? response.business_overview.industry_type
+                    : "Industry type not specified"}
                 </span>
               </div>
               <div className="key-value-pair">
                 <span className="key">Name:</span>
-                <span className="value">{response.business_overview.name}</span>
+                <span className="value">
+                  {response.business_overview?.name
+                    ? response.business_overview.name
+                    : "Business name not specified"}
+                </span>
               </div>
               <div className="key-value-pair">
                 <span className="key">Type:</span>
-                <span className="value">{response.business_overview.type}</span>
+                <span className="value">
+                  {response.business_overview?.type
+                    ? response.business_overview.type
+                    : "Business type not specified"}
+                </span>
               </div>
               <div className="key-value-pair">
-                <span className="key">Sales Regions:</span>
+                <span className="key">Sales Regions/Segments:</span>
                 <span className="value">
-                  {response.business_overview.sales_bifurcation.join(", ")}
+                  {response.business_overview?.sales_bifurcation?.length > 0
+                    ? response.business_overview.sales_bifurcation.join(", ")
+                    : "No region-wise bifurcation specified"}
                 </span>
               </div>
             </div>

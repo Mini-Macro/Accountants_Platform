@@ -46,18 +46,50 @@ function FileUploadModal({ open, handleClose }) {
   // Function to parse response data with markdown code blocks
   const parseResponseData = (data) => {
     try {
+      let parsedData;
+
       if (typeof data === "string") {
         // Remove the markdown code block markers if they exist
         const jsonString = data
           .replace(/```json\n?/g, "")
           .replace(/```\n?/g, "")
           .trim();
-        return JSON.parse(jsonString);
+        parsedData = JSON.parse(jsonString);
       } else if (Array.isArray(data)) {
         // If the data is already an array, use it directly
-        return data;
+        parsedData = data;
+      } else {
+        return []; // Return empty array as fallback
       }
-      return []; // Return empty array as fallback
+
+      // Process each table to ensure sample_data is properly parsed
+      return parsedData.map((table) => {
+        const processedTable = { ...table };
+
+        // Handle both old format (sample_data) and new format (sample_data_json)
+        if (
+          table.sample_data_json &&
+          typeof table.sample_data_json === "string"
+        ) {
+          try {
+            processedTable.sample_data = JSON.parse(table.sample_data_json);
+          } catch (parseError) {
+            console.error(
+              `Error parsing sample_data_json for table ${table.table_name}:`,
+              parseError
+            );
+            processedTable.sample_data = [];
+          }
+        } else if (table.sample_data) {
+          // Old format - sample_data is already an array
+          processedTable.sample_data = table.sample_data;
+        } else {
+          // No sample data available
+          processedTable.sample_data = [];
+        }
+
+        return processedTable;
+      });
     } catch (parseError) {
       console.error("Error parsing data:", parseError);
       throw new Error("Failed to parse the response data.");
@@ -120,7 +152,7 @@ function FileUploadModal({ open, handleClose }) {
       formData.append("client_id", companyId);
 
       const response = await axios.post(
-        "https://main-server-restless-dawn-7780.fly.dev/accounting_recipe/get_non_financial_data",
+        "http://127.0.0.1:8000/get_non_financial_data",
         formData,
         {
           headers: {
@@ -135,6 +167,7 @@ function FileUploadModal({ open, handleClose }) {
       try {
         // Use the parsing function to get structured data
         const parsedData = parseResponseData(result);
+        console.log("Parsed data:", parsedData); // Debug log
         setTableData(parsedData);
       } catch (error) {
         setError(error.message);
@@ -172,7 +205,13 @@ function FileUploadModal({ open, handleClose }) {
     // Generate all CSV files for download
     tableData.forEach((table) => {
       if (table.sample_data && table.sample_data.length > 0) {
+        console.log(
+          `Generating CSV for table: ${table.table_name}`,
+          table.sample_data
+        ); // Debug log
         generateAndDownloadCSV(table.sample_data, table.table_name);
+      } else {
+        console.warn(`No sample data found for table: ${table.table_name}`);
       }
     });
 
@@ -188,6 +227,13 @@ function FileUploadModal({ open, handleClose }) {
 
   // Helper function to convert data to CSV and trigger download
   const generateAndDownloadCSV = (data, filename) => {
+    console.log("generateAndDownloadCSV called with:", { data, filename }); // Debug log
+
+    if (!data || !Array.isArray(data) || data.length === 0) {
+      console.error("No valid data provided for CSV generation");
+      return;
+    }
+
     // Get headers from the first data object
     const headers = Object.keys(data[0]);
 
